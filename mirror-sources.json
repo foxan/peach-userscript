@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "sleazy-576375",
+      "url": "https://update.sleazyfork.org/scripts/576375/JAV%E8%80%81%E5%8F%B8%E6%9C%BA-%E6%96%B0.user.js",
+      "evidence_url": "https://sleazyfork.org/scripts/576375-jav%E8%80%81%E5%8F%B8%E6%9C%BA-%E6%96%B0",
+      "format": "metadata",
+      "path": "docs/evidence/sleazy-metadata/576375.json",
+      "sha256": "6b05b29f967167af5cc36c86c8af3cc591121141e39ece0e3fab7fc28d233ca4",
+      "metadata_sha256": "c56927cf2404f00f89cc4ccaf9503c21d9e8cc3135e66f44b792f789e1c45c15"
+    },
+    {
+      "id": "sleazy-429173",
+      "url": "https://update.sleazyfork.org/scripts/429173/JAV%20%E6%B7%BB%E5%8A%A0%E8%B7%B3%E8%BD%AC%E5%9C%A8%E7%BA%BF%E8%A7%82%E7%9C%8B.user.js",
+      "evidence_url": "https://sleazyfork.org/scripts/429173-jav-%E6%B7%BB%E5%8A%A0%E8%B7%B3%E8%BD%AC%E5%9C%A8%E7%BA%BF%E8%A7%82%E7%9C%8B",
+      "format": "metadata",
+      "path": "docs/evidence/sleazy-metadata/429173.json",
+      "sha256": "cc8a85ef0d2ba5e4bb6433717aeeb80c27916e20c0e2bd9e190be4c6259accc3",
+      "metadata_sha256": "71d8eedbcc1942b4129e43756523d41693c048bea4c25632d7edf6ccff4bcc75"
+    },
+    {
+      "id": "sleazy-428639",
+      "url": "https://update.sleazyfork.org/scripts/428639/OneJAVOneWeb.user.js",
+      "evidence_url": "https://sleazyfork.org/scripts/428639-onejavoneweb",
+      "format": "metadata",
+      "path": "docs/evidence/sleazy-metadata/428639.json",
+      "sha256": "cc2141e70ee87d7532feb1643dd47a8472e439bfcb1009164e10551abddd2eb4",
+      "metadata_sha256": "a9d9ffd8ce6899b6f37fabcfc2b2a185e42fc5258c72d2355cf07680c62acd7c"
+    },
+    {
+      "id": "sleazy-449158",
+      "url": "https://update.sleazyfork.org/scripts/449158/OneJAVOneWeb%20list.user.js",
+      "evidence_url": "https://sleazyfork.org/scripts/449158-onejavoneweb-list",
+      "format": "metadata",
+      "path": "docs/evidence/sleazy-metadata/449158.json",
+      "sha256": "fa868a5abf8c56f6134f5611ad89c7f33c4fba2677d277a0a4808e449c932b1b",
+      "metadata_sha256": "8e3feb066eacb7549865452c833e7baa065a9a625bdbf85d96602899e6dd3cc4"
+    },
+    {
+      "id": "sleazy-529125",
+      "url": "https://update.sleazyfork.org/scripts/529125/MissAV%20Enhanced%20Assistant.user.js",
+      "evidence_url": "https://sleazyfork.org/scripts/529125-missav-enhanced-assistant",
+      "format": "metadata",
+      "path": "docs/evidence/sleazy-metadata/529125.json",
+      "sha256": "8852fa6866cd4f9feaa222e1f35972f946c9e932c5f69901cb3c3648e835a14d",
+      "metadata_sha256": "f14530821690f79559bc8637dc8ea6e79ca16a390bcfd62a76b4015df98d5ad3"
+    },
+    {
+      "id": "sleazy-519635",
+      "url": "https://update.sleazyfork.org/scripts/519635/%E8%80%81%E5%8F%B8%E6%9C%BA%E4%BF%AE%E7%82%BC%E6%89%8B%E5%86%8C.user.js",
+      "evidence_url": "https://sleazyfork.org/scripts/519635-%E8%80%81%E5%8F%B8%E6%9C%BA%E4%BF%AE%E7%82%BC%E6%89%8B%E5%86%8C",
+      "format": "metadata",
+      "path": "docs/evidence/sleazy-metadata/519635.json",
+      "sha256": "7c8ef8be439ec18d00fca0b6fad76113b16d199fea5444d819ea0b317e3f3b7c",
+      "metadata_sha256": "a008db3637609b1b19b34cc74bd1464245a0b4119b5eeb225892917acd72d628"
+    }
+  ]
+}

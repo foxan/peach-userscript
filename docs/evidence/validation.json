@@ -1,0 +1,36 @@
+{
+  "version": "0.3.0",
+  "verified_on": "2026-10-18",
+  "runtime": "Node.js 24.19.0",
+  "commands": [
+    { "command": "npm ci --ignore-scripts --no-audit --no-fund", "exit_code": 0 },
+    { "command": "npm run build", "exit_code": 0 },
+    { "command": "npm run verify", "exit_code": 0, "unit_tests": 12, "browser_tests": 160 },
+    { "command": "npm run candidates", "exit_code": 0, "candidate_records": 135 }
+  ],
+  "sites": 78,
+  "domains": 104,
+  "automatic_sites": 12,
+  "selection_sites": 66,
+  "registered_review_records": 44,
+  "pending_review_records": 12,
+  "source_metadata_snapshots": 6,
+  "browser_fixture": {
+    "engine": "Chromium / installed Chrome, headless",
+    "network": "all page requests intercepted; GM API mocked",
+    "desktop": { "width": 1280, "height": 800, "passed": true },
+    "mobile": { "width": 390, "height": 844, "passed": true }
+  },
+  "export_fixture": {
+    "default_preview": true,
+    "explicit_apply": true,
+    "fixed_file_names": true,
+    "upstream_commit_required": true,
+    "registered_peach_worktree_required": true,
+    "production_export_executed": false
+  },
+  "real_extension_and_cloud_download": "未取得",
+  "production_restart": "不适用；只准备独立仓库内容",
+  "ledger_write": false,
+  "remote_publish_executed": false
+}

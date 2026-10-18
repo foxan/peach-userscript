@@ -1,0 +1,37 @@
+{
+  "source_sha256": "8852fa6866cd4f9feaa222e1f35972f946c9e932c5f69901cb3c3648e835a14d",
+  "declarations": [
+    [
+      "match",
+      "https://missav123.com/*"
+    ],
+    [
+      "match",
+      "https://missav.ws/*"
+    ],
+    [
+      "match",
+      "https://missav.live/*"
+    ],
+    [
+      "match",
+      "https://missav.ai/*"
+    ],
+    [
+      "match",
+      "https://missav.com/*"
+    ],
+    [
+      "match",
+      "https://thisav.com/*"
+    ],
+    [
+      "match",
+      "*://missav.fans/*"
+    ],
+    [
+      "match",
+      "*://missav.media/*"
+    ]
+  ]
+}

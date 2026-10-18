@@ -1,0 +1,1224 @@
+{
+  "version": 1,
+  "observed_on": "2026-10-18",
+  "sources": [
+    {
+      "id": 576375,
+      "name": "JAV老司机-新",
+      "version": "2.9.4.4",
+      "daily_installs": 69,
+      "total_installs": 7694,
+      "url": "https://sleazyfork.org/scripts/576375-jav%E8%80%81%E5%8F%B8%E6%9C%BA-%E6%96%B0",
+      "code_url": "https://update.sleazyfork.org/scripts/576375/JAV%E8%80%81%E5%8F%B8%E6%9C%BA-%E6%96%B0.user.js",
+      "sha256": "6b05b29f967167af5cc36c86c8af3cc591121141e39ece0e3fab7fc28d233ca4",
+      "archived_sha256": "74eb5b15c4d9f1d78fc42b8eb18f8c026cb57566fbc9bfccb1519b0d6a14490d",
+      "archived_normalization": "CRLF-to-LF"
+    },
+    {
+      "id": 429173,
+      "name": "JAV 添加跳转在线观看",
+      "version": "1.2.11",
+      "daily_installs": 13,
+      "total_installs": 99778,
+      "url": "https://sleazyfork.org/scripts/429173-jav-%E6%B7%BB%E5%8A%A0%E8%B7%B3%E8%BD%AC%E5%9C%A8%E7%BA%BF%E8%A7%82%E7%9C%8B",
+      "code_url": "https://update.sleazyfork.org/scripts/429173/JAV%20%E6%B7%BB%E5%8A%A0%E8%B7%B3%E8%BD%AC%E5%9C%A8%E7%BA%BF%E8%A7%82%E7%9C%8B.user.js",
+      "sha256": "cc8a85ef0d2ba5e4bb6433717aeeb80c27916e20c0e2bd9e190be4c6259accc3",
+      "archived_sha256": "717f2fef9c77a4a009bd60085153595ebd2c6301e86ef6782e308806490c6156",
+      "archived_normalization": "CRLF-to-LF"
+    },
+    {
+      "id": 428639,
+      "name": "OneJAVOneWeb",
+      "version": "2022.0703.1500",
+      "daily_installs": 3,
+      "total_installs": 149485,
+      "url": "https://sleazyfork.org/scripts/428639-onejavoneweb",
+      "code_url": "https://update.sleazyfork.org/scripts/428639/OneJAVOneWeb.user.js",
+      "sha256": "cc2141e70ee87d7532feb1643dd47a8472e439bfcb1009164e10551abddd2eb4",
+      "archived_sha256": "12ab648e280419f09a660f78fdfc8c5a046a661f37a66995850578f82d767694",
+      "archived_normalization": "CRLF-to-LF"
+    },
+    {
+      "id": 449158,
+      "name": "OneJAVOneWeb list",
+      "version": "2023.1029.1800",
+      "daily_installs": 3,
+      "total_installs": 48904,
+      "url": "https://sleazyfork.org/scripts/449158-onejavoneweb-list",
+      "code_url": "https://update.sleazyfork.org/scripts/449158/OneJAVOneWeb%20list.user.js",
+      "sha256": "fa868a5abf8c56f6134f5611ad89c7f33c4fba2677d277a0a4808e449c932b1b",
+      "archived_sha256": "548db8bb2d5f81b3f4c9aeaafd4a5c4e6686c92c3d5b493fea364e8ebac46cf2",
+      "archived_normalization": "CRLF-to-LF"
+    },
+    {
+      "id": 529125,
+      "name": "MissAV Enhanced Assistant",
+      "version": "2026.3.31.1",
+      "daily_installs": 15,
+      "total_installs": 7785,
+      "url": "https://sleazyfork.org/scripts/529125-missav-enhanced-assistant",
+      "code_url": "https://update.sleazyfork.org/scripts/529125/MissAV%20Enhanced%20Assistant.user.js",
+      "sha256": "8852fa6866cd4f9feaa222e1f35972f946c9e932c5f69901cb3c3648e835a14d",
+      "archived_sha256": "d270cb118dde0e4336b300451e088a5bb97a67960cec5f789428056fb401c532",
+      "archived_normalization": "CRLF-to-LF"
+    },
+    {
+      "id": 519635,
+      "name": "老司机修炼手册",
+      "version": "4.0.2",
+      "daily_installs": 21,
+      "total_installs": 24474,
+      "url": "https://sleazyfork.org/scripts/519635-%E8%80%81%E5%8F%B8%E6%9C%BA%E4%BF%AE%E7%82%BC%E6%89%8B%E5%86%8C",
+      "code_url": "https://update.sleazyfork.org/scripts/519635/%E8%80%81%E5%8F%B8%E6%9C%BA%E4%BF%AE%E7%82%BC%E6%89%8B%E5%86%8C.user.js",
+      "sha256": "7c8ef8be439ec18d00fca0b6fad76113b16d199fea5444d819ea0b317e3f3b7c",
+      "archived_sha256": "fc3ebe8503ea38685dafee014831eee6c1acf76baddee07bde74428103a0cab7",
+      "archived_normalization": "CRLF-to-LF"
+    }
+  ],
+  "scope": "仅记录公开元数据、探测事实和明确审阅后的站点范围；不包含第三方实现源码。",
+  "registered": [
+    {
+      "domain": "missav123.com",
+      "site_id": "missav",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        529125
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "missav123.com",
+        "url": "https://missav123.com/",
+        "status": 403,
+        "final_url": "https://missav123.com/cn/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "missav.live",
+      "site_id": "missav",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        529125
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "missav.live",
+        "url": "https://missav.live/",
+        "status": 403,
+        "final_url": "https://missav.live/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "missav.fans",
+      "site_id": "missav",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        529125
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "missav.fans",
+        "url": "https://missav.fans/",
+        "status": 200,
+        "final_url": "https://missav.fans/",
+        "title": "MissAV | Watch HD JAV Online | Free & High Quality AV",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "missav.media",
+      "site_id": "missav",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        529125
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "missav.media",
+        "url": "https://missav.media/",
+        "status": 200,
+        "final_url": "https://missav.media/",
+        "title": "MissAV | Watch HD JAV Online | Free & High Quality AV",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "javgo.to",
+      "site_id": "njav",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javgo.to",
+        "url": "https://javgo.to/",
+        "status": 200,
+        "final_url": "https://javgo.to/en",
+        "title": "123AV - Watch Free JAV &amp;amp; Japanese AV Online in HD",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "HTTPS 标题为 123AV，429173 声明 /zh/v/{{code}} 路径。"
+      ]
+    },
+    {
+      "domain": "javmost.cx",
+      "site_id": "javmost",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javmost.cx",
+        "url": "https://javmost.cx/",
+        "status": 200,
+        "final_url": "https://www.javmost.ws/",
+        "title": "Javmost - Watch Free Jav Online Streaming",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "dmmsee.casa",
+      "site_id": "javbus",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "dmmsee.casa",
+        "url": "https://dmmsee.casa/",
+        "status": 200,
+        "final_url": "https://www.dmmsee.casa/doc/driver-verify?referer=https%3A%2F%2Fwww.dmmsee.casa%2F",
+        "title": "Age Verification JavBus - JavBus",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "HTTPS 响应为 JavBus 年龄确认页，未提交年龄确认。"
+      ]
+    },
+    {
+      "domain": "busfan.casa",
+      "site_id": "javbus",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "busfan.casa",
+        "url": "https://busfan.casa/",
+        "status": 200,
+        "final_url": "https://www.busfan.casa/doc/driver-verify?referer=https%3A%2F%2Fwww.busfan.casa%2F",
+        "title": "Age Verification JavBus - JavBus",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "HTTPS 响应为 JavBus 年龄确认页，未提交年龄确认。"
+      ]
+    },
+    {
+      "domain": "busdmm.casa",
+      "site_id": "javbus",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "busdmm.casa",
+        "url": "https://busdmm.casa/",
+        "status": 200,
+        "final_url": "https://www.busdmm.casa/doc/driver-verify?referer=https%3A%2F%2Fwww.busdmm.casa%2F",
+        "title": "Age Verification JavBus - JavBus",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "HTTPS 响应为 JavBus 年龄确认页，未提交年龄确认。"
+      ]
+    },
+    {
+      "domain": "javlib.com",
+      "site_id": "javlibrary",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javlib.com",
+        "url": "https://javlib.com/",
+        "status": 200,
+        "final_url": "https://javlib.com/",
+        "title": "JavLibrary.com - Japanese Adult Video Library",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "镜像归属采用 576375 的显式域名枚举，403 挑战不作为详情验收。"
+      ]
+    },
+    {
+      "domain": "r86m.com",
+      "site_id": "javlibrary",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "r86m.com",
+        "url": "https://r86m.com/",
+        "status": 200,
+        "final_url": "https://r86m.com/",
+        "title": "",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "镜像归属采用 576375 的显式域名枚举，403 挑战不作为详情验收。"
+      ]
+    },
+    {
+      "domain": "f101w.com",
+      "site_id": "javlibrary",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "f101w.com",
+        "url": "https://f101w.com/",
+        "status": 403,
+        "final_url": "https://f101w.com/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "镜像归属采用 576375 的显式域名枚举，403 挑战不作为详情验收。"
+      ]
+    },
+    {
+      "domain": "c99i.com",
+      "site_id": "javlibrary",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "c99i.com",
+        "url": "https://c99i.com/",
+        "status": 403,
+        "final_url": "https://c99i.com/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "镜像归属采用 576375 的显式域名枚举，403 挑战不作为详情验收。"
+      ]
+    },
+    {
+      "domain": "e100k.com",
+      "site_id": "javlibrary",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "e100k.com",
+        "url": "https://e100k.com/",
+        "status": 403,
+        "final_url": "https://e100k.com/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "镜像归属采用 576375 的显式域名枚举，403 挑战不作为详情验收。"
+      ]
+    },
+    {
+      "domain": "avsox.click",
+      "site_id": "avsox",
+      "relationship": "mirror",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "avsox.click",
+        "url": "https://avsox.click/",
+        "status": 403,
+        "final_url": "https://avsox.click/",
+        "title": "",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "netflav5.com",
+      "site_id": "netflav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "netflav5.com",
+        "url": "https://netflav5.com/",
+        "status": 200,
+        "final_url": "https://netflav5.com/",
+        "title": "Netflav - 主頁 / Home",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "netflav.com",
+      "site_id": "netflav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "netflav.com",
+        "url": "https://netflav.com/",
+        "status": 200,
+        "final_url": "https://netflav.com/",
+        "title": "",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "bestjavporn.com",
+      "site_id": "bestjavporn",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "bestjavporn.com",
+        "url": "https://bestjavporn.com/",
+        "status": 200,
+        "final_url": "https://www.bestjavporn.com/",
+        "title": "BestJavPorn - Watch Free Jav HD Porn Streaming Online",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "javmenu.com",
+      "site_id": "javmenu",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javmenu.com",
+        "url": "https://javmenu.com/",
+        "status": 200,
+        "final_url": "https://javmenu.com/",
+        "title": "JAV目錄大全 | 世界上最齊全的日本AV資料庫",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "avjoy.me",
+      "site_id": "avjoy",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "avjoy.me",
+        "url": "https://avjoy.me/",
+        "status": 200,
+        "final_url": "https://avjoy.me/",
+        "title": "Free Porn Videos - AVJOY",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "ggjav.com",
+      "site_id": "ggjav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "ggjav.com",
+        "url": "https://ggjav.com/",
+        "status": 200,
+        "final_url": "https://ggjav.com/",
+        "title": "GGJAV | 最齊全的免費線上AV，線上A片，高清日本AV，線上成人影片，JAV",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "av01.tv",
+      "site_id": "av01",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "av01.tv",
+        "url": "https://av01.tv/",
+        "status": 200,
+        "final_url": "https://www.av01.media/",
+        "title": "AV01.tv | 高品質な無料AV動画のストリーミング",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "av01.media",
+      "site_id": "av01",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "redirect_target",
+        "domain": "av01.tv",
+        "url": "https://av01.tv/",
+        "status": 200,
+        "final_url": "https://www.av01.media/",
+        "title": "AV01.tv | 高品質な無料AV動画のストリーミング",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "highporn.net",
+      "site_id": "highporn",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "highporn.net",
+        "url": "https://highporn.net/",
+        "status": 200,
+        "final_url": "https://highporn.net/",
+        "title": "HighPorn - Watch online jav streaming for free",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "evojav.pro",
+      "site_id": "evojav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "evojav.pro",
+        "url": "https://evojav.pro/",
+        "status": 403,
+        "final_url": "https://evojav.pro/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "hayav.com",
+      "site_id": "hayav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "hayav.com",
+        "url": "https://hayav.com/",
+        "status": 403,
+        "final_url": "https://hayav.com/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "javhub.net",
+      "site_id": "javhub",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javhub.net",
+        "url": "https://javhub.net/",
+        "status": 200,
+        "final_url": "https://javhub.net/",
+        "title": "Javhub.net- Free japanese porn tube site, watch online jav porn streaming for free",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "141jav.com",
+      "site_id": "141jav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        428639,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "141jav.com",
+        "url": "https://141jav.com/",
+        "status": 403,
+        "final_url": "https://141jav.com/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "141ppv.com",
+      "site_id": "141ppv",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "141ppv.com",
+        "url": "https://141ppv.com/",
+        "status": 403,
+        "final_url": "https://141ppv.com/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "freejavbt.com",
+      "site_id": "freejavbt",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        428639,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "freejavbt.com",
+        "url": "https://freejavbt.com/",
+        "status": 200,
+        "final_url": "https://freejavbt.com/",
+        "title": "FREE JAV BT | 每日更新",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "freejavbt.xyz",
+      "site_id": "freejavbt",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        428639,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "freejavbt.xyz",
+        "url": "https://freejavbt.xyz/",
+        "status": 200,
+        "final_url": "https://freejavbt.xyz/",
+        "title": "FREE JAV BT | 每日更新",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "javrate.com",
+      "site_id": "javrate",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javrate.com",
+        "url": "https://javrate.com/",
+        "status": 200,
+        "final_url": "https://www.javrate.com/",
+        "title": "正妹AV,日本A片,國產AV,免費在綫看 - Javrate",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "sehuatang.net",
+      "site_id": "sehuatang",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "sehuatang.net",
+        "url": "https://sehuatang.net/",
+        "status": 200,
+        "final_url": "https://sehuatang.net/",
+        "title": "不详",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "站点归属采用脚本声明；当前主页正文与标题混淆，真实页面验收未取得。"
+      ]
+    },
+    {
+      "domain": "sehuatang.org",
+      "site_id": "sehuatang",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375,
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "sehuatang.org",
+        "url": "https://sehuatang.org/",
+        "status": 200,
+        "final_url": "https://sehuatang.org/",
+        "title": "伯特兰·罗素",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "站点归属采用脚本声明；当前主页正文与标题混淆，真实页面验收未取得。"
+      ]
+    },
+    {
+      "domain": "169bbs.com",
+      "site_id": "169bbs",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "169bbs.com",
+        "url": "https://169bbs.com/",
+        "status": 200,
+        "final_url": "https://169bbs.com/",
+        "title": "SEX169 论坛 - Powered by Discuz!",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "hjd2048.com",
+      "site_id": "hjd2048",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        576375
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "hjd2048.com",
+        "url": "https://hjd2048.com/",
+        "status": 200,
+        "final_url": "https://hjd2048.com/2048/",
+        "title": "人人为我论坛",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "airav.wiki",
+      "site_id": "airav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "airav.wiki",
+        "url": "https://airav.wiki/",
+        "status": 403,
+        "final_url": "https://airav.io",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "airav.fun",
+      "site_id": "airav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "airav.fun",
+        "url": "https://airav.fun/",
+        "status": 403,
+        "final_url": "https://airav.io",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "airav.io",
+      "site_id": "airav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        449158
+      ],
+      "probe": {
+        "evidence_type": "redirect_target",
+        "domain": "airav.wiki",
+        "url": "https://airav.wiki/",
+        "status": 403,
+        "final_url": "https://airav.io",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "javbooks.com",
+      "site_id": "javbooks",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javbooks.com",
+        "url": "https://javbooks.com/",
+        "status": 200,
+        "final_url": "https://javbooks.com/",
+        "title": "Javbooks,線上日本成人影片情報站,線上日本成人影片磁力連結分享站,番號搜尋共享AV磁力連結",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "javfree.me",
+      "site_id": "javfree",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javfree.me",
+        "url": "https://javfree.me/",
+        "status": 200,
+        "final_url": "https://javfree.me/",
+        "title": "High quality JAV – High quality Japanese Adult Video Download",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": [
+        "来源为 HTTPS 首页身份探测，未引用第三方脚本实现。"
+      ]
+    },
+    {
+      "domain": "javcv.com",
+      "site_id": "javcv",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "javcv.com",
+        "url": "https://javcv.com/",
+        "status": 403,
+        "final_url": "https://javcv.com/",
+        "title": "Just a moment...",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "projectjav.com",
+      "site_id": "projectjav",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        449158
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "projectjav.com",
+        "url": "https://projectjav.com/",
+        "status": 200,
+        "final_url": "https://projectjav.com/",
+        "title": "ProjectJav - High Speed Jav Torrent",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    },
+    {
+      "domain": "paipancon.com",
+      "site_id": "paipancon",
+      "relationship": "site",
+      "decision": "registered",
+      "review_basis": "协调者审阅后的明确登记范围",
+      "source_ids": [
+        429173
+      ],
+      "probe": {
+        "evidence_type": "direct",
+        "domain": "paipancon.com",
+        "url": "https://paipancon.com/",
+        "status": 200,
+        "final_url": "https://paipancon.com/",
+        "title": "パイパンコン - パイパン無毛エロ動画コレクション",
+        "parked": false
+      },
+      "automatic_detail_verified": false,
+      "extension_download_verified": false,
+      "notes": []
+    }
+  ],
+  "pending": [
+    {
+      "domain": "s87n.com",
+      "decision": "pending",
+      "probe": {
+        "domain": "s87n.com",
+        "url": "https://s87n.com/",
+        "error": "ConnectError: "
+      },
+      "reason": "TLS 或连接失败，未取得可用站点证据。"
+    },
+    {
+      "domain": "y94i.com",
+      "decision": "pending",
+      "probe": {
+        "domain": "y94i.com",
+        "url": "https://y94i.com/",
+        "error": "ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1082)"
+      },
+      "reason": "TLS 或连接失败，未取得可用站点证据。"
+    },
+    {
+      "domain": "javdb457.com",
+      "decision": "pending",
+      "probe": {
+        "domain": "javdb457.com",
+        "url": "https://javdb457.com/",
+        "error": "ConnectError: "
+      },
+      "reason": "TLS 或连接失败，未取得可用站点证据。"
+    },
+    {
+      "domain": "v90f.com",
+      "decision": "pending",
+      "probe": {
+        "domain": "v90f.com",
+        "url": "https://v90f.com/",
+        "error": "ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1082)"
+      },
+      "reason": "TLS 或连接失败，未取得可用站点证据。"
+    },
+    {
+      "domain": "avmoo.click",
+      "decision": "pending",
+      "probe": {
+        "domain": "avmoo.click",
+        "url": "https://avmoo.click/",
+        "status": 200,
+        "final_url": "https://avmoo.click/",
+        "title": "Loading...",
+        "parked": false
+      },
+      "reason": "空白、加载或跳转页面不足以确认归属。"
+    },
+    {
+      "domain": "avmoo.cfd",
+      "decision": "pending",
+      "probe": {
+        "domain": "avmoo.cfd",
+        "url": "https://avmoo.cfd/",
+        "status": 200,
+        "final_url": "https://avmoo.cfd/",
+        "title": "",
+        "parked": false
+      },
+      "reason": "空白、加载或跳转页面不足以确认归属。"
+    },
+    {
+      "domain": "hpav.tv",
+      "decision": "pending",
+      "probe": {
+        "domain": "hpav.tv",
+        "url": "https://hpav.tv/",
+        "status": 406,
+        "final_url": "https://hplives.com/",
+        "title": "",
+        "parked": false
+      },
+      "reason": "空白、加载或跳转页面不足以确认归属。"
+    },
+    {
+      "domain": "javhhh.com",
+      "decision": "pending",
+      "probe": {
+        "domain": "javhhh.com",
+        "url": "https://javhhh.com/",
+        "status": 522,
+        "final_url": "https://javhhh.com/",
+        "title": "javhhh.com | 522: Connection timed out",
+        "parked": false
+      },
+      "reason": "站点响应或归属证据不足，保持待核验。"
+    },
+    {
+      "domain": "javfc2.net",
+      "decision": "pending",
+      "probe": {
+        "domain": "javfc2.net",
+        "url": "https://javfc2.net/",
+        "error": "ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1082)"
+      },
+      "reason": "TLS 或连接失败，未取得可用站点证据。"
+    },
+    {
+      "domain": "sehuatang.com",
+      "decision": "pending",
+      "probe": {
+        "domain": "sehuatang.com",
+        "url": "https://sehuatang.com/",
+        "error": "ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'sehuatang.com'. (_ssl.c:1082)"
+      },
+      "reason": "TLS 或连接失败，未取得可用站点证据。"
+    },
+    {
+      "domain": "db.msin.jp",
+      "decision": "pending",
+      "probe": {
+        "domain": "db.msin.jp",
+        "url": "https://db.msin.jp/",
+        "error": "ConnectError: "
+      },
+      "reason": "TLS 或连接失败，未取得可用站点证据。"
+    },
+    {
+      "domain": "javstore.net",
+      "decision": "pending",
+      "probe": {
+        "domain": "javstore.net",
+        "url": "https://javstore.net/",
+        "error": "ConnectError: "
+      },
+      "reason": "TLS 或连接失败，未取得可用站点证据。"
+    }
+  ],
+  "exclusions": [
+    "超宽通配符不进入匹配清单",
+    "Avgle 和 R18.com 等历史入口不登记"
+  ]
+}

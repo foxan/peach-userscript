@@ -1,0 +1,24 @@
+name: 验证用户脚本
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: node node_modules/playwright-core/cli.js install --with-deps chromium
+      - run: npm run verify
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: peach-userscript
+          path: dist/
+          if-no-files-found: error

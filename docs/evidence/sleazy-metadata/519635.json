@@ -1,0 +1,45 @@
+{
+  "source_sha256": "7c8ef8be439ec18d00fca0b6fad76113b16d199fea5444d819ea0b317e3f3b7c",
+  "declarations": [
+    [
+      "match",
+      "*://*.missav.com/*"
+    ],
+    [
+      "match",
+      "*://*.missav.ws/*"
+    ],
+    [
+      "match",
+      "*://*.missav.ai/*"
+    ],
+    [
+      "match",
+      "*://*.jable.tv/*"
+    ],
+    [
+      "match",
+      "*://*.pornhub.com/*"
+    ],
+    [
+      "match",
+      "*://*.18comic.org/*"
+    ],
+    [
+      "match",
+      "*://*.18comic.vip/*"
+    ],
+    [
+      "match",
+      "*://*.91porn.com/*"
+    ],
+    [
+      "match",
+      "*://*.91porna.com/*"
+    ],
+    [
+      "match",
+      "*://*.xvideos.com/*"
+    ]
+  ]
+}
