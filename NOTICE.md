@@ -6,4 +6,4 @@
 
 本仓库负责脚本与站点清单的独立维护、构建和发布。Peach 服务端保留发布制品和站点验证快照。
 
-`playwright-core` 1.64.0 为 Apache-2.0 许可的开发依赖，不打入用户脚本。脚本使用 Tampermonkey 官方 GM API；Tampermonkey 由用户独立安装，不作为项目分发内容。候选同步工具只从来源快照读取元数据并保留来源 URL 和 SHA256，不复制或执行第三方脚本实现。
+`playwright-core` 1.64.1 为 Apache-2.0 许可的开发依赖，不打入用户脚本。脚本使用 Tampermonkey 官方 GM API；Tampermonkey 由用户独立安装，不作为项目分发内容。候选同步工具只从来源快照读取元数据并保留来源 URL 和 SHA256，不复制或执行第三方脚本实现。
