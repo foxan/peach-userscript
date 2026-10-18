@@ -5,7 +5,7 @@
 ## 安装与配对
 
 1. 安装 [Tampermonkey](https://www.tampermonkey.net/)。
-2. 打开[可直接安装的脚本](https://raw.githubusercontent.com/peach-mitao/peach-userscript/main/dist/peach-jav.user.js)，在脚本管理器中确认安装。
+2. 打开 [Sleazy 发布页](https://sleazyfork.org/zh-CN/scripts/600821)，点击「安装此脚本」，在脚本管理器中确认安装。
 3. 在 Peach 打开「Peach 配置 → 下载渠道 → 浏览器添加 JAV」，启用并生成专用令牌。
 4. 在支持的站点打开脚本菜单「配置 Peach 地址与令牌」，填入自己的 Peach 地址和专用令牌。
 5. 允许脚本连接该 Peach 地址。浏览器须信任其 HTTPS 证书；HTTP 仅支持回环地址。
