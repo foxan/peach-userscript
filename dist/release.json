@@ -1,9 +1,9 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "site_schema_version": 1,
   "repository": "https://github.com/peach-mitao/peach-userscript",
   "files": {
-    "peach-jav.user.js": "613d8240b9364ab9c2dfbcfbf311e6a46f5d0c43e70d2df6d7021850c525ee9d",
-    "jav-sites.json": "5772b7f70e45201c98fe93548855168145d22406c7e453d4b11243e215e57e13"
+    "peach-jav.user.js": "43648b5b17b8418600b57055c372ab55989c93564f8c99d6d856c24e19add909",
+    "jav-sites.json": "caf34f6ecd248452e83646268b74190d8728104d7cbdb628f46b9a51c272285b"
   }
 }

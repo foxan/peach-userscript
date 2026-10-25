@@ -1,6 +1,6 @@
 {
   "name": "@peach-mitao/peach-userscript",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "license": "AGPL-3.0-or-later",
@@ -10,7 +10,7 @@
     "check": "node scripts/build.mjs --check",
     "export": "node scripts/export.mjs",
     "test": "node --test tests/build.test.mjs tests/candidates.test.mjs tests/export-peach.test.mjs",
-    "test:browser": "node --test tests/browser.test.ts",
+    "test:browser": "node --test tests/browser.test.ts tests/watch.test.ts",
     "verify": "npm run check && npm test && npm run test:browser",
     "candidates": "node scripts/sync-candidates.mjs"
   },
