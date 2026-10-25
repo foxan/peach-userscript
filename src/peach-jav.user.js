@@ -5,23 +5,124 @@
 // @supportURL   https://github.com/peach-mitao/peach-userscript/issues
 // @homepageURL  https://github.com/peach-mitao/peach-userscript
 // @license      AGPL-3.0-or-later
-// @version      0.3.0
+// @version      0.4.0
 // @description  在 JAV 作品详情页识别或选中番号，交给 Peach 下载入库。
 // __PEACH_JAV_MATCHES__
+// @match        https://ibucket.org/embed/*
+// @match        https://lk1.supremejav.com/supjav.php*
+// @match        https://fc2stream.tv/*
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_listValues
+// @grant        GM_deleteValue
 // @grant        GM_registerMenuCommand
 // @grant        GM_xmlhttpRequest
 // @grant        window.onurlchange
 // @connect      *
 // @run-at       document-idle
-// @noframes
 // ==/UserScript==
 
 (() => {
   'use strict';
 
   const SITE_RULES = __PEACH_JAV_SITES__;
+  const FRAME_ORIGINS = ['https://ibucket.org', 'https://lk1.supremejav.com', 'https://fc2stream.tv'];
+  const WATCH_SITES = {
+    'www.uncenx.com': 'uncenx', 'uncenx.com': 'uncenx', 'supjav.com': 'supjav', 'www.supjav.com': 'supjav',
+  };
+  const WATCH_KEY = 'peach.watch.config';
+  const PENDING = 'peach.watch.pending.';
+
+  function combine(intervals, start, end) {
+    const sorted = [...intervals, [start, end]].sort((a, b) => a[0] - b[0]);
+    const merged = [];
+    for (const pair of sorted) {
+      const last = merged.at(-1);
+      if (last && pair[0] <= last[1]) last[1] = Math.max(last[1], pair[1]);
+      else merged.push([...pair]);
+    }
+    return merged;
+  }
+
+  // 只在已确认播放器容器里计时；媒体地址、Cookie 与凭据不跨 frame 传递。
+  function observePlayer(selector, emit, visible) {
+    let video = null, source = '', session = '', sequence = 0, seconds = 0, intervals = [];
+    let lastTime = performance.now(), started = lastTime, position = 0, wasPlaying = false, lastSent = 0;
+    const snapshot = () => {
+      if (!video || !seconds || !Number.isFinite(video.duration) || video.duration < 60) return;
+      emit({ session, sequence: ++sequence, seconds, elapsed: (performance.now() - started) / 1000,
+        duration: video.duration, intervals });
+      lastSent = performance.now();
+    };
+    const sample = () => {
+      const found = [...document.querySelectorAll(selector)].filter(node => node.isConnected);
+      const next = found.length === 1 ? found[0] : null;
+      if (next !== video || (video && source !== video.currentSrc) || performance.now() - started >= 23 * 3600_000) {
+        snapshot();
+        video = next; source = video?.currentSrc || ''; session = crypto.randomUUID();
+        sequence = 0; seconds = 0; intervals = []; wasPlaying = false;
+        lastTime = performance.now(); started = lastTime; position = video?.currentTime || 0;
+      }
+      const now = performance.now(), elapsed = (now - lastTime) / 1000;
+      const current = video?.currentTime || 0, delta = current - position;
+      const rate = video?.playbackRate || 1;
+      const playing = Boolean(video && visible() && !document.hidden && !video.paused && !video.seeking
+        && video.readyState >= 2 && !video.closest('.jw-flag-ads,.vjs-ad-playing,[data-ad-playing="true"]'));
+      if (playing && wasPlaying && elapsed > 0 && elapsed <= 2 && delta > 0
+        && rate > 0 && delta <= elapsed * rate + 0.5 && Number.isFinite(video.duration) && video.duration >= 60) {
+        const merged = combine(intervals, position, Math.min(current, video.duration));
+        if (merged.length <= 256) {
+          seconds += Math.min(elapsed, delta / rate); intervals = merged;
+        }
+      }
+      if (wasPlaying && !playing) snapshot();
+      position = current; lastTime = now; wasPlaying = playing;
+      if (now - lastSent >= 10_000) snapshot();
+    };
+    const boundary = () => { sample(); wasPlaying = false; snapshot(); };
+    const timer = setInterval(sample, 500);
+    for (const event of ['pause', 'ended', 'seeking', 'waiting', 'ratechange', 'emptied']) {
+      document.addEventListener(event, boundary, true);
+    }
+    addEventListener('pagehide', boundary);
+    document.addEventListener('visibilitychange', boundary);
+    return () => {
+      boundary(); clearInterval(timer);
+      for (const event of ['pause', 'ended', 'seeking', 'waiting', 'ratechange', 'emptied']) {
+        document.removeEventListener(event, boundary, true);
+      }
+      removeEventListener('pagehide', boundary); document.removeEventListener('visibilitychange', boundary);
+    };
+  }
+
+  if (window.top !== window) {
+    if (!FRAME_ORIGINS.includes(location.origin)) return;
+    let binding = null, stop = null, lastBinding = 0;
+    const child = () => [...document.querySelectorAll('iframe')].filter(frame => {
+      try { return FRAME_ORIGINS.includes(new URL(frame.src, location.href).origin); } catch { return false; }
+    });
+    addEventListener('message', event => {
+      const data = event.data;
+      if (event.source === parent && data?.type === 'peach-watch-bind'
+        && (Object.keys(WATCH_SITES).some(host => event.origin === `https://${host}`)
+          || event.origin === 'https://lk1.supremejav.com')
+        && typeof data.nonce === 'string' && /^[a-f0-9-]{36}$/.test(data.nonce)) {
+        lastBinding = performance.now();
+        if (binding?.nonce !== data.nonce) {
+          stop?.(); binding = { nonce: data.nonce, origin: event.origin, visible: data.visible === true };
+          stop = observePlayer(location.hostname === 'ibucket.org' ? '#player video' : '#vplayer video', value => {
+            parent.postMessage({ type: 'peach-watch-report', nonce: binding.nonce, value }, binding.origin);
+          }, () => binding.visible && performance.now() - lastBinding < 4000);
+        }
+        binding.visible = data.visible === true;
+        for (const frame of child()) for (const origin of FRAME_ORIGINS) frame.contentWindow?.postMessage(data, origin);
+      } else if (binding && data?.type === 'peach-watch-report' && data.nonce === binding.nonce
+        && FRAME_ORIGINS.includes(event.origin) && child().some(frame => frame.contentWindow === event.source)) {
+        parent.postMessage(data, binding.origin);
+      }
+    });
+    return;
+  }
   const STORAGE_BASE = 'peach.jav.base';
   const STORAGE_TOKEN = 'peach.jav.token';
   const ROOT_ID = 'peach-jav-action';
@@ -39,6 +140,112 @@
   let pageKey = '';
   let refreshTimer;
   let selected = null;
+  let watch = null;
+  const sending = new Set();
+
+  function watchConfig() {
+    try {
+      const value = GM_getValue(WATCH_KEY, null);
+      return value ? settings(value.base, value.token) : null;
+    } catch { return null; }
+  }
+
+  GM_registerMenuCommand('配置站外观看记录', () => {
+    const base = prompt('Peach 地址（含 http:// 或 https://）', watchConfig()?.base || GM_getValue(STORAGE_BASE, ''));
+    if (base === null) return;
+    const token = prompt('站外观看专用令牌', '');
+    if (token === null) return;
+    try { GM_setValue(WATCH_KEY, settings(base, token)); }
+    catch { alert('地址或站外观看令牌无效。'); }
+  });
+  GM_registerMenuCommand('关闭站外观看记录', () => {
+    GM_deleteValue(WATCH_KEY);
+    watch?.stop?.(); watch = null;
+    for (const key of GM_listValues()) if (key.startsWith(PENDING)) GM_deleteValue(key);
+  });
+
+  function sendPending(key, pending, config) {
+    if (Date.now() - pending.at > 24 * 3600_000) { GM_deleteValue(key); return; }
+    if (sending.has(key) || pending.base !== config.base) return;
+    sending.add(key);
+    try { GM_xmlhttpRequest({ method: 'POST', url: `${config.base}/api/external-watch`,
+      headers: { Authorization: `Bearer ${config.token}`, 'Content-Type': 'application/json' },
+      data: JSON.stringify(pending.body), anonymous: true, timeout: 15_000, redirect: 'error',
+      onload(response) {
+        sending.delete(key);
+        if (response.status >= 200 && response.status < 300) {
+          const stored = GM_getValue(key, null);
+          if (stored?.body.sequence === pending.body.sequence) GM_deleteValue(key);
+        }
+      },
+      onerror: () => sending.delete(key), ontimeout: () => sending.delete(key), onabort: () => sending.delete(key),
+    }); } catch { sending.delete(key); }
+  }
+
+  function pendingEntries() {
+    const entries = [];
+    for (const key of GM_listValues()) {
+      if (!key.startsWith(PENDING)) continue;
+      const value = GM_getValue(key, null);
+      if (!value || !Number.isFinite(value.at) || Date.now() - value.at > 24 * 3600_000) GM_deleteValue(key);
+      else entries.push([key, value]);
+    }
+    entries.sort((a, b) => b[1].at - a[1].at);
+    for (const [key] of entries.slice(100)) GM_deleteValue(key);
+    return entries.slice(0, 100);
+  }
+
+  function queueWatch(value, owner) {
+    const config = watchConfig();
+    if (!config || watch !== owner || owner.url !== location.href || owner.base !== config.base) return;
+    const key = PENDING + value.session;
+    const pending = { base: config.base, at: Date.now(), body: { ...value,
+      code: owner.code, site: owner.site, page: owner.page } };
+    GM_setValue(key, pending); pendingEntries(); sendPending(key, pending, config);
+  }
+
+  function refreshWatch() {
+    const config = watchConfig(), url = new URL(location.href), site = WATCH_SITES[url.hostname];
+    const rule = siteFor(url), item = rule ? automaticIdentity(url, rule) : null;
+    const key = config && site && item && !item.conflict ? `${url.href}|${item.code}|${config.base}|${config.token}` : '';
+    if (watch?.key !== key) {
+      watch?.stop?.(); watch = null;
+      if (key) {
+        const owner = { key, url: url.href, page: item.source, code: item.code, site, base: config.base,
+          nonce: crypto.randomUUID(), frame: null, stop: null };
+        watch = owner;
+        owner.stop = observePlayer(site === 'supjav' ? '#dz_video video' : '#player video', value => queueWatch(value, owner),
+          () => watch === owner);
+      }
+    }
+    if (!watch) return;
+    const selector = watch.site === 'uncenx' ? 'iframe[src^="https://ibucket.org/embed/"]' : '#dz_video > iframe#video';
+    const frames = [...document.querySelectorAll(selector)];
+    const frame = frames.length === 1 ? frames[0] : null;
+    if (watch.frame !== frame) { watch.frame = frame; watch.nonce = crypto.randomUUID(); }
+    if (frame) for (const origin of FRAME_ORIGINS) frame.contentWindow?.postMessage({
+      type: 'peach-watch-bind', nonce: watch.nonce, visible: !document.hidden,
+    }, origin);
+  }
+  addEventListener('message', event => {
+    if (!watch?.frame || event.source !== watch.frame.contentWindow
+      || !FRAME_ORIGINS.includes(event.origin) || event.data?.type !== 'peach-watch-report'
+      || event.data.nonce !== watch.nonce) return;
+    const value = event.data.value;
+    if (!value || typeof value !== 'object' || !/^[a-f0-9-]{36}$/.test(value.session)
+      || !Number.isInteger(value.sequence) || !Number.isFinite(value.seconds)
+      || !Number.isFinite(value.duration) || !Number.isFinite(value.elapsed)
+      || !Array.isArray(value.intervals) || value.intervals.length > 256) return;
+    queueWatch({ session: value.session, sequence: value.sequence, seconds: value.seconds, elapsed: value.elapsed,
+      duration: value.duration, intervals: value.intervals }, watch);
+  });
+  setInterval(refreshWatch, 1000);
+  setInterval(() => {
+    const config = watchConfig();
+    if (config) for (const [key, pending] of pendingEntries().filter(([, value]) => value.base === config.base).slice(0, 5)) {
+      sendPending(key, pending, config);
+    }
+  }, 30_000);
 
   // 只做粗提取；合法番号由 Peach 校验。
   function candidates(value) {

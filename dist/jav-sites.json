@@ -48,7 +48,24 @@
       "domains": [
         "supjav.com"
       ],
-      "mode": "selection"
+      "mode": "automatic",
+      "detail_pattern": "^/ja/[0-9]+\\.html$",
+      "selectors": [
+        ".archive-title h1"
+      ]
+    },
+    {
+      "id": "uncenx",
+      "label": "UNCENX",
+      "kind": "在线播放",
+      "domains": [
+        "uncenx.com"
+      ],
+      "mode": "automatic",
+      "detail_pattern": "^/ja/([^/]+)$",
+      "selectors": [
+        "h1"
+      ]
     },
     {
       "id": "jav-guru",

@@ -10,7 +10,8 @@
       "id": "jable", "label": "Jable", "kind": "在线播放", "domains": ["jable.tv"], "mode": "automatic",
       "detail_pattern": "^/videos/([^/]+)/?$", "selectors": ["h1", ".video-info h4", "[data-video-code]", "dt", ".video-info p"]
     },
-    { "id": "supjav", "label": "SupJAV", "kind": "在线播放", "domains": ["supjav.com"], "mode": "selection" },
+    { "id": "supjav", "label": "SupJAV", "kind": "在线播放", "domains": ["supjav.com"], "mode": "automatic", "detail_pattern": "^/ja/[0-9]+\\.html$", "selectors": [".archive-title h1"] },
+    { "id": "uncenx", "label": "UNCENX", "kind": "在线播放", "domains": ["uncenx.com"], "mode": "automatic", "detail_pattern": "^/ja/([^/]+)$", "selectors": ["h1"] },
     {
       "id": "jav-guru", "label": "JAV.guru", "kind": "在线播放", "domains": ["jav.guru"], "mode": "automatic",
       "detail_pattern": "^/[0-9]+/([^/]+)/?$", "selectors": ["h1.entry-title", "h1"]

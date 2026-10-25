@@ -120,6 +120,8 @@ const AUTOMATIC: Record<string, { path: string; title: string; html: string; sou
   avbase: { path: '/works/test-maker:SSIS-057', title: 'AVBase',
     html: '<h1>作品详情</h1><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"work":{"work_id":"SSIS-057","recommendations":[{"work_id":"ABW-123"}]}}}}</script>' },
   javdatabase: { path: '/movies/ssis-057/', title: 'JAVDatabase', html: '<h1>SSIS-057 作品</h1>' },
+  supjav: { path: '/ja/12345.html', title: 'SupJAV', html: '<div class="archive-title"><h1>SSIS-057 作品</h1></div>' },
+  uncenx: { path: '/ja/ssis-057-uncen', title: 'UNCENX', html: '<h1>SSIS-057 作品</h1>' },
 };
 
 describe('JAV 用户脚本', () => {

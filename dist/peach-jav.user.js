@@ -5,7 +5,7 @@
 // @supportURL   https://github.com/peach-mitao/peach-userscript/issues
 // @homepageURL  https://github.com/peach-mitao/peach-userscript
 // @license      AGPL-3.0-or-later
-// @version      0.3.0
+// @version      0.4.0
 // @description  在 JAV 作品详情页识别或选中番号，交给 Peach 下载入库。
 // @match        https://missav.ws/*
 // @match        https://*.missav.ws/*
@@ -25,6 +25,8 @@
 // @match        https://*.jable.tv/*
 // @match        https://supjav.com/*
 // @match        https://*.supjav.com/*
+// @match        https://uncenx.com/*
+// @match        https://*.uncenx.com/*
 // @match        https://jav.guru/*
 // @match        https://*.jav.guru/*
 // @match        https://njav.tv/*
@@ -215,20 +217,121 @@
 // @match        https://*.projectjav.com/*
 // @match        https://paipancon.com/*
 // @match        https://*.paipancon.com/*
+// @match        https://ibucket.org/embed/*
+// @match        https://lk1.supremejav.com/supjav.php*
+// @match        https://fc2stream.tv/*
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_listValues
+// @grant        GM_deleteValue
 // @grant        GM_registerMenuCommand
 // @grant        GM_xmlhttpRequest
 // @grant        window.onurlchange
 // @connect      *
 // @run-at       document-idle
-// @noframes
 // ==/UserScript==
 
 (() => {
   'use strict';
 
-  const SITE_RULES = {"version":1,"sites":[{"id":"missav","label":"MissAV","kind":"在线播放","domains":["missav.ws","missav.ai","missav.com","missav123.com","missav.live","missav.fans","missav.media"],"mode":"automatic","detail_pattern":"^/(?:dm[0-9]+/)?(?:(?:en|ja|zh|cn|tw)/)?([^/]+)/?$","selectors":["h1","[data-video-code]","dt",".video-info p",".video-detail p"]},{"id":"jable","label":"Jable","kind":"在线播放","domains":["jable.tv"],"mode":"automatic","detail_pattern":"^/videos/([^/]+)/?$","selectors":["h1",".video-info h4","[data-video-code]","dt",".video-info p"]},{"id":"supjav","label":"SupJAV","kind":"在线播放","domains":["supjav.com"],"mode":"selection"},{"id":"jav-guru","label":"JAV.guru","kind":"在线播放","domains":["jav.guru"],"mode":"automatic","detail_pattern":"^/[0-9]+/([^/]+)/?$","selectors":["h1.entry-title","h1"]},{"id":"njav","label":"NJAV / 123AV","kind":"在线播放","domains":["njav.tv","njavtv.com","123av.com","javgo.to"],"mode":"automatic","detail_pattern":"^/(?:en|ja|zh|cn|tw)/v/([^/]+)/?$","selectors":["h1","dt"]},{"id":"javtiful","label":"JAVtiful","kind":"在线播放","domains":["javtiful.com"],"mode":"automatic","detail_pattern":"^/(?:[a-z]{2}/)?video/[0-9]+/([^/]+)/?$","selectors":["h1","[data-video-code]"]},{"id":"javmost","label":"JAVMost","kind":"在线播放","domains":["javmost.com","javmost.ws","javmost.cx"],"mode":"selection"},{"id":"javgg","label":"JAVGG","kind":"在线播放","domains":["javgg.net"],"mode":"selection"},{"id":"7mmtv","label":"7mmtv","kind":"在线播放","domains":["7mmtv.sx"],"mode":"automatic","detail_pattern":"^/(?:ja|en|zh|cn|tw)/(?:censored|uncensored)_content/[0-9]+/([^/]+)\\.html$","selectors":["h1"]},{"id":"hpjav","label":"HPJAV","kind":"在线播放","domains":["hpjav.tv"],"mode":"selection"},{"id":"thisav","label":"ThisAV","kind":"在线播放","domains":["thisav.com"],"mode":"selection"},{"id":"javhd","label":"JAVHD","kind":"在线播放","domains":["javhd.com"],"mode":"selection"},{"id":"javdb","label":"JavDB","kind":"数据库","domains":["javdb.com"],"mode":"automatic","detail_pattern":"^/v/[A-Za-z0-9]+/?$","selectors":["h2.title",".panel-block strong"]},{"id":"javbus","label":"JavBus","kind":"数据库","domains":["javbus.com","dmmsee.casa","busfan.casa","busdmm.casa"],"mode":"automatic","detail_pattern":"^/(?:[a-z]{2}/)?([^/]+)/?$","selectors":["h3",".info p .header"]},{"id":"javlibrary","label":"JavLibrary","kind":"数据库","domains":["javlibrary.com","javlib.com","r86m.com","f101w.com","c99i.com","e100k.com"],"mode":"automatic","detail_pattern":"^/(?:cn|tw|en|ja)/?$","selectors":["#video_id .text","#video_title"],"query_keys":["v"]},{"id":"jav321","label":"Jav321","kind":"数据库","domains":["jav321.com"],"mode":"automatic","detail_pattern":"^/video/[A-Za-z0-9]+/?$","selectors":["h3",".panel-body b"]},{"id":"avbase","label":"AVBase","kind":"数据库","domains":["avbase.net"],"mode":"automatic","detail_pattern":"^/works/(?:[^/:]+:)?([^/:]+)/?$","selectors":["h1","#__NEXT_DATA__"]},{"id":"javdatabase","label":"JAVDatabase","kind":"数据库","domains":["javdatabase.com"],"mode":"automatic","detail_pattern":"^/movies/([^/]+)/?$","selectors":["h1",".movie-code"]},{"id":"jav-land","label":"JAV.land","kind":"数据库","domains":["jav.land"],"mode":"selection"},{"id":"avmoo","label":"AVMOO","kind":"数据库","domains":["avmoo.com"],"mode":"selection"},{"id":"avsox","label":"AVSOX","kind":"数据库","domains":["avsox.com","avsox.click"],"mode":"selection"},{"id":"av-wiki","label":"AV-Wiki","kind":"数据库","domains":["av-wiki.net"],"mode":"selection"},{"id":"fc2ppvdb","label":"FC2PPVDB","kind":"数据库","domains":["fc2ppv-db.com"],"mode":"selection"},{"id":"fc2cmadb","label":"FC2CmaDB","kind":"数据库","domains":["fc2cmadb.com"],"mode":"selection"},{"id":"javtrailers","label":"JAVTrailers","kind":"数据库","domains":["javtrailers.com"],"mode":"selection"},{"id":"javarchive","label":"JavArchive","kind":"数据库","domains":["javarchive.com"],"mode":"selection"},{"id":"javten","label":"JAVten","kind":"数据库","domains":["javten.com"],"mode":"selection"},{"id":"r18dev","label":"r18.dev","kind":"数据库","domains":["r18.dev"],"mode":"selection"},{"id":"dmm","label":"FANZA / DMM","kind":"发行平台","domains":["dmm.co.jp"],"mode":"selection","query_keys":["id"]},{"id":"mgs","label":"MGS","kind":"发行平台","domains":["mgstage.com"],"mode":"selection"},{"id":"duga","label":"DUGA","kind":"发行平台","domains":["duga.jp"],"mode":"selection"},{"id":"prestige","label":"Prestige","kind":"发行平台","domains":["prestige-av.com"],"mode":"selection"},{"id":"sod","label":"SOD / SODprime","kind":"发行平台","domains":["sod.co.jp"],"mode":"selection"},{"id":"faleno","label":"FALENO","kind":"发行平台","domains":["faleno.jp"],"mode":"selection"},{"id":"fc2-market","label":"FC2 内容市场","kind":"发行平台","domains":["adult.contents.fc2.com"],"mode":"selection"},{"id":"s1","label":"S1","kind":"片商","domains":["s1s1s1.com"],"mode":"selection"},{"id":"moodyz","label":"MOODYZ","kind":"片商","domains":["moodyz.com"],"mode":"selection"},{"id":"ideapocket","label":"IdeaPocket","kind":"片商","domains":["ideapocket.com"],"mode":"selection"},{"id":"madonna","label":"Madonna","kind":"片商","domains":["madonna-av.com"],"mode":"selection"},{"id":"attackers","label":"Attackers","kind":"片商","domains":["attackers.net"],"mode":"selection"},{"id":"premium","label":"Premium","kind":"片商","domains":["premium-beauty.com"],"mode":"selection"},{"id":"kawaii","label":"Kawaii","kind":"片商","domains":["kawaiikawaii.jp"],"mode":"selection"},{"id":"max-a","label":"MAX-A","kind":"片商","domains":["max-a.co.jp"],"mode":"selection"},{"id":"maxing","label":"MAXING","kind":"片商","domains":["maxing.jp"],"mode":"selection"},{"id":"1pondo","label":"一本道","kind":"无码","domains":["1pondo.tv"],"mode":"selection"},{"id":"caribbeancom","label":"加勒比","kind":"无码","domains":["caribbeancom.com"],"mode":"selection"},{"id":"10musume","label":"天然むすめ","kind":"无码","domains":["10musume.com"],"mode":"selection"},{"id":"pacopacomama","label":"Pacopacomama","kind":"无码","domains":["pacopacomama.com"],"mode":"selection"},{"id":"heyzo","label":"HEYZO","kind":"无码","domains":["heyzo.com"],"mode":"selection"},{"id":"tokyo-hot","label":"Tokyo-Hot","kind":"无码","domains":["tokyo-hot.com"],"mode":"selection"},{"id":"manko","label":"manko.fun","kind":"资源","domains":["manko.fun"],"mode":"selection"},{"id":"sukebei","label":"Sukebei","kind":"资源","domains":["sukebei.nyaa.si"],"mode":"selection"},{"id":"onejav","label":"OneJAV","kind":"资源","domains":["onejav.com"],"mode":"selection"},{"id":"freejavtorrent","label":"Free JAV Torrent","kind":"资源","domains":["freejavtorrent.com"],"mode":"selection"},{"id":"16mag","label":"16mag","kind":"资源","domains":["16mag.com"],"mode":"selection"},{"id":"netflav","label":"NETFLAV","kind":"在线播放","domains":["netflav5.com","netflav.com"],"mode":"selection"},{"id":"bestjavporn","label":"BestJavPorn","kind":"在线播放","domains":["bestjavporn.com"],"mode":"selection"},{"id":"javmenu","label":"JAVMenu","kind":"数据库","domains":["javmenu.com"],"mode":"selection"},{"id":"avjoy","label":"AVJOY","kind":"在线播放","domains":["avjoy.me"],"mode":"selection"},{"id":"ggjav","label":"GGJAV","kind":"在线播放","domains":["ggjav.com"],"mode":"selection"},{"id":"av01","label":"AV01","kind":"在线播放","domains":["av01.tv","av01.media"],"mode":"selection"},{"id":"highporn","label":"HighPorn","kind":"在线播放","domains":["highporn.net"],"mode":"selection"},{"id":"evojav","label":"EvoJAV","kind":"在线播放","domains":["evojav.pro"],"mode":"selection"},{"id":"hayav","label":"HayAV","kind":"在线播放","domains":["hayav.com"],"mode":"selection"},{"id":"javhub","label":"JAVHub","kind":"在线播放","domains":["javhub.net"],"mode":"selection"},{"id":"141jav","label":"141JAV","kind":"资源","domains":["141jav.com"],"mode":"selection"},{"id":"141ppv","label":"141PPV","kind":"资源","domains":["141ppv.com"],"mode":"selection"},{"id":"freejavbt","label":"FreeJavBT","kind":"资源","domains":["freejavbt.com","freejavbt.xyz"],"mode":"selection"},{"id":"javrate","label":"JAVRate","kind":"在线播放","domains":["javrate.com"],"mode":"selection"},{"id":"sehuatang","label":"色花堂","kind":"资源","domains":["sehuatang.net","sehuatang.org"],"mode":"selection","query_keys":["tid"]},{"id":"169bbs","label":"SEX169","kind":"资源","domains":["169bbs.com"],"mode":"selection"},{"id":"hjd2048","label":"2048论坛","kind":"资源","domains":["hjd2048.com"],"mode":"selection"},{"id":"airav","label":"AirAV","kind":"数据库","domains":["airav.wiki","airav.fun","airav.io"],"mode":"selection"},{"id":"javbooks","label":"JavBooks","kind":"资源","domains":["javbooks.com"],"mode":"selection"},{"id":"javfree","label":"JavFree","kind":"资源","domains":["javfree.me"],"mode":"selection"},{"id":"javcv","label":"JavCV","kind":"数据库","domains":["javcv.com"],"mode":"selection"},{"id":"projectjav","label":"ProjectJav","kind":"资源","domains":["projectjav.com"],"mode":"selection"},{"id":"paipancon","label":"Paipancon","kind":"在线播放","domains":["paipancon.com"],"mode":"selection"}]};
+  const SITE_RULES = {"version":1,"sites":[{"id":"missav","label":"MissAV","kind":"在线播放","domains":["missav.ws","missav.ai","missav.com","missav123.com","missav.live","missav.fans","missav.media"],"mode":"automatic","detail_pattern":"^/(?:dm[0-9]+/)?(?:(?:en|ja|zh|cn|tw)/)?([^/]+)/?$","selectors":["h1","[data-video-code]","dt",".video-info p",".video-detail p"]},{"id":"jable","label":"Jable","kind":"在线播放","domains":["jable.tv"],"mode":"automatic","detail_pattern":"^/videos/([^/]+)/?$","selectors":["h1",".video-info h4","[data-video-code]","dt",".video-info p"]},{"id":"supjav","label":"SupJAV","kind":"在线播放","domains":["supjav.com"],"mode":"automatic","detail_pattern":"^/ja/[0-9]+\\.html$","selectors":[".archive-title h1"]},{"id":"uncenx","label":"UNCENX","kind":"在线播放","domains":["uncenx.com"],"mode":"automatic","detail_pattern":"^/ja/([^/]+)$","selectors":["h1"]},{"id":"jav-guru","label":"JAV.guru","kind":"在线播放","domains":["jav.guru"],"mode":"automatic","detail_pattern":"^/[0-9]+/([^/]+)/?$","selectors":["h1.entry-title","h1"]},{"id":"njav","label":"NJAV / 123AV","kind":"在线播放","domains":["njav.tv","njavtv.com","123av.com","javgo.to"],"mode":"automatic","detail_pattern":"^/(?:en|ja|zh|cn|tw)/v/([^/]+)/?$","selectors":["h1","dt"]},{"id":"javtiful","label":"JAVtiful","kind":"在线播放","domains":["javtiful.com"],"mode":"automatic","detail_pattern":"^/(?:[a-z]{2}/)?video/[0-9]+/([^/]+)/?$","selectors":["h1","[data-video-code]"]},{"id":"javmost","label":"JAVMost","kind":"在线播放","domains":["javmost.com","javmost.ws","javmost.cx"],"mode":"selection"},{"id":"javgg","label":"JAVGG","kind":"在线播放","domains":["javgg.net"],"mode":"selection"},{"id":"7mmtv","label":"7mmtv","kind":"在线播放","domains":["7mmtv.sx"],"mode":"automatic","detail_pattern":"^/(?:ja|en|zh|cn|tw)/(?:censored|uncensored)_content/[0-9]+/([^/]+)\\.html$","selectors":["h1"]},{"id":"hpjav","label":"HPJAV","kind":"在线播放","domains":["hpjav.tv"],"mode":"selection"},{"id":"thisav","label":"ThisAV","kind":"在线播放","domains":["thisav.com"],"mode":"selection"},{"id":"javhd","label":"JAVHD","kind":"在线播放","domains":["javhd.com"],"mode":"selection"},{"id":"javdb","label":"JavDB","kind":"数据库","domains":["javdb.com"],"mode":"automatic","detail_pattern":"^/v/[A-Za-z0-9]+/?$","selectors":["h2.title",".panel-block strong"]},{"id":"javbus","label":"JavBus","kind":"数据库","domains":["javbus.com","dmmsee.casa","busfan.casa","busdmm.casa"],"mode":"automatic","detail_pattern":"^/(?:[a-z]{2}/)?([^/]+)/?$","selectors":["h3",".info p .header"]},{"id":"javlibrary","label":"JavLibrary","kind":"数据库","domains":["javlibrary.com","javlib.com","r86m.com","f101w.com","c99i.com","e100k.com"],"mode":"automatic","detail_pattern":"^/(?:cn|tw|en|ja)/?$","selectors":["#video_id .text","#video_title"],"query_keys":["v"]},{"id":"jav321","label":"Jav321","kind":"数据库","domains":["jav321.com"],"mode":"automatic","detail_pattern":"^/video/[A-Za-z0-9]+/?$","selectors":["h3",".panel-body b"]},{"id":"avbase","label":"AVBase","kind":"数据库","domains":["avbase.net"],"mode":"automatic","detail_pattern":"^/works/(?:[^/:]+:)?([^/:]+)/?$","selectors":["h1","#__NEXT_DATA__"]},{"id":"javdatabase","label":"JAVDatabase","kind":"数据库","domains":["javdatabase.com"],"mode":"automatic","detail_pattern":"^/movies/([^/]+)/?$","selectors":["h1",".movie-code"]},{"id":"jav-land","label":"JAV.land","kind":"数据库","domains":["jav.land"],"mode":"selection"},{"id":"avmoo","label":"AVMOO","kind":"数据库","domains":["avmoo.com"],"mode":"selection"},{"id":"avsox","label":"AVSOX","kind":"数据库","domains":["avsox.com","avsox.click"],"mode":"selection"},{"id":"av-wiki","label":"AV-Wiki","kind":"数据库","domains":["av-wiki.net"],"mode":"selection"},{"id":"fc2ppvdb","label":"FC2PPVDB","kind":"数据库","domains":["fc2ppv-db.com"],"mode":"selection"},{"id":"fc2cmadb","label":"FC2CmaDB","kind":"数据库","domains":["fc2cmadb.com"],"mode":"selection"},{"id":"javtrailers","label":"JAVTrailers","kind":"数据库","domains":["javtrailers.com"],"mode":"selection"},{"id":"javarchive","label":"JavArchive","kind":"数据库","domains":["javarchive.com"],"mode":"selection"},{"id":"javten","label":"JAVten","kind":"数据库","domains":["javten.com"],"mode":"selection"},{"id":"r18dev","label":"r18.dev","kind":"数据库","domains":["r18.dev"],"mode":"selection"},{"id":"dmm","label":"FANZA / DMM","kind":"发行平台","domains":["dmm.co.jp"],"mode":"selection","query_keys":["id"]},{"id":"mgs","label":"MGS","kind":"发行平台","domains":["mgstage.com"],"mode":"selection"},{"id":"duga","label":"DUGA","kind":"发行平台","domains":["duga.jp"],"mode":"selection"},{"id":"prestige","label":"Prestige","kind":"发行平台","domains":["prestige-av.com"],"mode":"selection"},{"id":"sod","label":"SOD / SODprime","kind":"发行平台","domains":["sod.co.jp"],"mode":"selection"},{"id":"faleno","label":"FALENO","kind":"发行平台","domains":["faleno.jp"],"mode":"selection"},{"id":"fc2-market","label":"FC2 内容市场","kind":"发行平台","domains":["adult.contents.fc2.com"],"mode":"selection"},{"id":"s1","label":"S1","kind":"片商","domains":["s1s1s1.com"],"mode":"selection"},{"id":"moodyz","label":"MOODYZ","kind":"片商","domains":["moodyz.com"],"mode":"selection"},{"id":"ideapocket","label":"IdeaPocket","kind":"片商","domains":["ideapocket.com"],"mode":"selection"},{"id":"madonna","label":"Madonna","kind":"片商","domains":["madonna-av.com"],"mode":"selection"},{"id":"attackers","label":"Attackers","kind":"片商","domains":["attackers.net"],"mode":"selection"},{"id":"premium","label":"Premium","kind":"片商","domains":["premium-beauty.com"],"mode":"selection"},{"id":"kawaii","label":"Kawaii","kind":"片商","domains":["kawaiikawaii.jp"],"mode":"selection"},{"id":"max-a","label":"MAX-A","kind":"片商","domains":["max-a.co.jp"],"mode":"selection"},{"id":"maxing","label":"MAXING","kind":"片商","domains":["maxing.jp"],"mode":"selection"},{"id":"1pondo","label":"一本道","kind":"无码","domains":["1pondo.tv"],"mode":"selection"},{"id":"caribbeancom","label":"加勒比","kind":"无码","domains":["caribbeancom.com"],"mode":"selection"},{"id":"10musume","label":"天然むすめ","kind":"无码","domains":["10musume.com"],"mode":"selection"},{"id":"pacopacomama","label":"Pacopacomama","kind":"无码","domains":["pacopacomama.com"],"mode":"selection"},{"id":"heyzo","label":"HEYZO","kind":"无码","domains":["heyzo.com"],"mode":"selection"},{"id":"tokyo-hot","label":"Tokyo-Hot","kind":"无码","domains":["tokyo-hot.com"],"mode":"selection"},{"id":"manko","label":"manko.fun","kind":"资源","domains":["manko.fun"],"mode":"selection"},{"id":"sukebei","label":"Sukebei","kind":"资源","domains":["sukebei.nyaa.si"],"mode":"selection"},{"id":"onejav","label":"OneJAV","kind":"资源","domains":["onejav.com"],"mode":"selection"},{"id":"freejavtorrent","label":"Free JAV Torrent","kind":"资源","domains":["freejavtorrent.com"],"mode":"selection"},{"id":"16mag","label":"16mag","kind":"资源","domains":["16mag.com"],"mode":"selection"},{"id":"netflav","label":"NETFLAV","kind":"在线播放","domains":["netflav5.com","netflav.com"],"mode":"selection"},{"id":"bestjavporn","label":"BestJavPorn","kind":"在线播放","domains":["bestjavporn.com"],"mode":"selection"},{"id":"javmenu","label":"JAVMenu","kind":"数据库","domains":["javmenu.com"],"mode":"selection"},{"id":"avjoy","label":"AVJOY","kind":"在线播放","domains":["avjoy.me"],"mode":"selection"},{"id":"ggjav","label":"GGJAV","kind":"在线播放","domains":["ggjav.com"],"mode":"selection"},{"id":"av01","label":"AV01","kind":"在线播放","domains":["av01.tv","av01.media"],"mode":"selection"},{"id":"highporn","label":"HighPorn","kind":"在线播放","domains":["highporn.net"],"mode":"selection"},{"id":"evojav","label":"EvoJAV","kind":"在线播放","domains":["evojav.pro"],"mode":"selection"},{"id":"hayav","label":"HayAV","kind":"在线播放","domains":["hayav.com"],"mode":"selection"},{"id":"javhub","label":"JAVHub","kind":"在线播放","domains":["javhub.net"],"mode":"selection"},{"id":"141jav","label":"141JAV","kind":"资源","domains":["141jav.com"],"mode":"selection"},{"id":"141ppv","label":"141PPV","kind":"资源","domains":["141ppv.com"],"mode":"selection"},{"id":"freejavbt","label":"FreeJavBT","kind":"资源","domains":["freejavbt.com","freejavbt.xyz"],"mode":"selection"},{"id":"javrate","label":"JAVRate","kind":"在线播放","domains":["javrate.com"],"mode":"selection"},{"id":"sehuatang","label":"色花堂","kind":"资源","domains":["sehuatang.net","sehuatang.org"],"mode":"selection","query_keys":["tid"]},{"id":"169bbs","label":"SEX169","kind":"资源","domains":["169bbs.com"],"mode":"selection"},{"id":"hjd2048","label":"2048论坛","kind":"资源","domains":["hjd2048.com"],"mode":"selection"},{"id":"airav","label":"AirAV","kind":"数据库","domains":["airav.wiki","airav.fun","airav.io"],"mode":"selection"},{"id":"javbooks","label":"JavBooks","kind":"资源","domains":["javbooks.com"],"mode":"selection"},{"id":"javfree","label":"JavFree","kind":"资源","domains":["javfree.me"],"mode":"selection"},{"id":"javcv","label":"JavCV","kind":"数据库","domains":["javcv.com"],"mode":"selection"},{"id":"projectjav","label":"ProjectJav","kind":"资源","domains":["projectjav.com"],"mode":"selection"},{"id":"paipancon","label":"Paipancon","kind":"在线播放","domains":["paipancon.com"],"mode":"selection"}]};
+  const FRAME_ORIGINS = ['https://ibucket.org', 'https://lk1.supremejav.com', 'https://fc2stream.tv'];
+  const WATCH_SITES = {
+    'www.uncenx.com': 'uncenx', 'uncenx.com': 'uncenx', 'supjav.com': 'supjav', 'www.supjav.com': 'supjav',
+  };
+  const WATCH_KEY = 'peach.watch.config';
+  const PENDING = 'peach.watch.pending.';
+
+  function combine(intervals, start, end) {
+    const sorted = [...intervals, [start, end]].sort((a, b) => a[0] - b[0]);
+    const merged = [];
+    for (const pair of sorted) {
+      const last = merged.at(-1);
+      if (last && pair[0] <= last[1]) last[1] = Math.max(last[1], pair[1]);
+      else merged.push([...pair]);
+    }
+    return merged;
+  }
+
+  // 只在已确认播放器容器里计时；媒体地址、Cookie 与凭据不跨 frame 传递。
+  function observePlayer(selector, emit, visible) {
+    let video = null, source = '', session = '', sequence = 0, seconds = 0, intervals = [];
+    let lastTime = performance.now(), started = lastTime, position = 0, wasPlaying = false, lastSent = 0;
+    const snapshot = () => {
+      if (!video || !seconds || !Number.isFinite(video.duration) || video.duration < 60) return;
+      emit({ session, sequence: ++sequence, seconds, elapsed: (performance.now() - started) / 1000,
+        duration: video.duration, intervals });
+      lastSent = performance.now();
+    };
+    const sample = () => {
+      const found = [...document.querySelectorAll(selector)].filter(node => node.isConnected);
+      const next = found.length === 1 ? found[0] : null;
+      if (next !== video || (video && source !== video.currentSrc) || performance.now() - started >= 23 * 3600_000) {
+        snapshot();
+        video = next; source = video?.currentSrc || ''; session = crypto.randomUUID();
+        sequence = 0; seconds = 0; intervals = []; wasPlaying = false;
+        lastTime = performance.now(); started = lastTime; position = video?.currentTime || 0;
+      }
+      const now = performance.now(), elapsed = (now - lastTime) / 1000;
+      const current = video?.currentTime || 0, delta = current - position;
+      const rate = video?.playbackRate || 1;
+      const playing = Boolean(video && visible() && !document.hidden && !video.paused && !video.seeking
+        && video.readyState >= 2 && !video.closest('.jw-flag-ads,.vjs-ad-playing,[data-ad-playing="true"]'));
+      if (playing && wasPlaying && elapsed > 0 && elapsed <= 2 && delta > 0
+        && rate > 0 && delta <= elapsed * rate + 0.5 && Number.isFinite(video.duration) && video.duration >= 60) {
+        const merged = combine(intervals, position, Math.min(current, video.duration));
+        if (merged.length <= 256) {
+          seconds += Math.min(elapsed, delta / rate); intervals = merged;
+        }
+      }
+      if (wasPlaying && !playing) snapshot();
+      position = current; lastTime = now; wasPlaying = playing;
+      if (now - lastSent >= 10_000) snapshot();
+    };
+    const boundary = () => { sample(); wasPlaying = false; snapshot(); };
+    const timer = setInterval(sample, 500);
+    for (const event of ['pause', 'ended', 'seeking', 'waiting', 'ratechange', 'emptied']) {
+      document.addEventListener(event, boundary, true);
+    }
+    addEventListener('pagehide', boundary);
+    document.addEventListener('visibilitychange', boundary);
+    return () => {
+      boundary(); clearInterval(timer);
+      for (const event of ['pause', 'ended', 'seeking', 'waiting', 'ratechange', 'emptied']) {
+        document.removeEventListener(event, boundary, true);
+      }
+      removeEventListener('pagehide', boundary); document.removeEventListener('visibilitychange', boundary);
+    };
+  }
+
+  if (window.top !== window) {
+    if (!FRAME_ORIGINS.includes(location.origin)) return;
+    let binding = null, stop = null, lastBinding = 0;
+    const child = () => [...document.querySelectorAll('iframe')].filter(frame => {
+      try { return FRAME_ORIGINS.includes(new URL(frame.src, location.href).origin); } catch { return false; }
+    });
+    addEventListener('message', event => {
+      const data = event.data;
+      if (event.source === parent && data?.type === 'peach-watch-bind'
+        && (Object.keys(WATCH_SITES).some(host => event.origin === `https://${host}`)
+          || event.origin === 'https://lk1.supremejav.com')
+        && typeof data.nonce === 'string' && /^[a-f0-9-]{36}$/.test(data.nonce)) {
+        lastBinding = performance.now();
+        if (binding?.nonce !== data.nonce) {
+          stop?.(); binding = { nonce: data.nonce, origin: event.origin, visible: data.visible === true };
+          stop = observePlayer(location.hostname === 'ibucket.org' ? '#player video' : '#vplayer video', value => {
+            parent.postMessage({ type: 'peach-watch-report', nonce: binding.nonce, value }, binding.origin);
+          }, () => binding.visible && performance.now() - lastBinding < 4000);
+        }
+        binding.visible = data.visible === true;
+        for (const frame of child()) for (const origin of FRAME_ORIGINS) frame.contentWindow?.postMessage(data, origin);
+      } else if (binding && data?.type === 'peach-watch-report' && data.nonce === binding.nonce
+        && FRAME_ORIGINS.includes(event.origin) && child().some(frame => frame.contentWindow === event.source)) {
+        parent.postMessage(data, binding.origin);
+      }
+    });
+    return;
+  }
   const STORAGE_BASE = 'peach.jav.base';
   const STORAGE_TOKEN = 'peach.jav.token';
   const ROOT_ID = 'peach-jav-action';
@@ -246,6 +349,112 @@
   let pageKey = '';
   let refreshTimer;
   let selected = null;
+  let watch = null;
+  const sending = new Set();
+
+  function watchConfig() {
+    try {
+      const value = GM_getValue(WATCH_KEY, null);
+      return value ? settings(value.base, value.token) : null;
+    } catch { return null; }
+  }
+
+  GM_registerMenuCommand('配置站外观看记录', () => {
+    const base = prompt('Peach 地址（含 http:// 或 https://）', watchConfig()?.base || GM_getValue(STORAGE_BASE, ''));
+    if (base === null) return;
+    const token = prompt('站外观看专用令牌', '');
+    if (token === null) return;
+    try { GM_setValue(WATCH_KEY, settings(base, token)); }
+    catch { alert('地址或站外观看令牌无效。'); }
+  });
+  GM_registerMenuCommand('关闭站外观看记录', () => {
+    GM_deleteValue(WATCH_KEY);
+    watch?.stop?.(); watch = null;
+    for (const key of GM_listValues()) if (key.startsWith(PENDING)) GM_deleteValue(key);
+  });
+
+  function sendPending(key, pending, config) {
+    if (Date.now() - pending.at > 24 * 3600_000) { GM_deleteValue(key); return; }
+    if (sending.has(key) || pending.base !== config.base) return;
+    sending.add(key);
+    try { GM_xmlhttpRequest({ method: 'POST', url: `${config.base}/api/external-watch`,
+      headers: { Authorization: `Bearer ${config.token}`, 'Content-Type': 'application/json' },
+      data: JSON.stringify(pending.body), anonymous: true, timeout: 15_000, redirect: 'error',
+      onload(response) {
+        sending.delete(key);
+        if (response.status >= 200 && response.status < 300) {
+          const stored = GM_getValue(key, null);
+          if (stored?.body.sequence === pending.body.sequence) GM_deleteValue(key);
+        }
+      },
+      onerror: () => sending.delete(key), ontimeout: () => sending.delete(key), onabort: () => sending.delete(key),
+    }); } catch { sending.delete(key); }
+  }
+
+  function pendingEntries() {
+    const entries = [];
+    for (const key of GM_listValues()) {
+      if (!key.startsWith(PENDING)) continue;
+      const value = GM_getValue(key, null);
+      if (!value || !Number.isFinite(value.at) || Date.now() - value.at > 24 * 3600_000) GM_deleteValue(key);
+      else entries.push([key, value]);
+    }
+    entries.sort((a, b) => b[1].at - a[1].at);
+    for (const [key] of entries.slice(100)) GM_deleteValue(key);
+    return entries.slice(0, 100);
+  }
+
+  function queueWatch(value, owner) {
+    const config = watchConfig();
+    if (!config || watch !== owner || owner.url !== location.href || owner.base !== config.base) return;
+    const key = PENDING + value.session;
+    const pending = { base: config.base, at: Date.now(), body: { ...value,
+      code: owner.code, site: owner.site, page: owner.page } };
+    GM_setValue(key, pending); pendingEntries(); sendPending(key, pending, config);
+  }
+
+  function refreshWatch() {
+    const config = watchConfig(), url = new URL(location.href), site = WATCH_SITES[url.hostname];
+    const rule = siteFor(url), item = rule ? automaticIdentity(url, rule) : null;
+    const key = config && site && item && !item.conflict ? `${url.href}|${item.code}|${config.base}|${config.token}` : '';
+    if (watch?.key !== key) {
+      watch?.stop?.(); watch = null;
+      if (key) {
+        const owner = { key, url: url.href, page: item.source, code: item.code, site, base: config.base,
+          nonce: crypto.randomUUID(), frame: null, stop: null };
+        watch = owner;
+        owner.stop = observePlayer(site === 'supjav' ? '#dz_video video' : '#player video', value => queueWatch(value, owner),
+          () => watch === owner);
+      }
+    }
+    if (!watch) return;
+    const selector = watch.site === 'uncenx' ? 'iframe[src^="https://ibucket.org/embed/"]' : '#dz_video > iframe#video';
+    const frames = [...document.querySelectorAll(selector)];
+    const frame = frames.length === 1 ? frames[0] : null;
+    if (watch.frame !== frame) { watch.frame = frame; watch.nonce = crypto.randomUUID(); }
+    if (frame) for (const origin of FRAME_ORIGINS) frame.contentWindow?.postMessage({
+      type: 'peach-watch-bind', nonce: watch.nonce, visible: !document.hidden,
+    }, origin);
+  }
+  addEventListener('message', event => {
+    if (!watch?.frame || event.source !== watch.frame.contentWindow
+      || !FRAME_ORIGINS.includes(event.origin) || event.data?.type !== 'peach-watch-report'
+      || event.data.nonce !== watch.nonce) return;
+    const value = event.data.value;
+    if (!value || typeof value !== 'object' || !/^[a-f0-9-]{36}$/.test(value.session)
+      || !Number.isInteger(value.sequence) || !Number.isFinite(value.seconds)
+      || !Number.isFinite(value.duration) || !Number.isFinite(value.elapsed)
+      || !Array.isArray(value.intervals) || value.intervals.length > 256) return;
+    queueWatch({ session: value.session, sequence: value.sequence, seconds: value.seconds, elapsed: value.elapsed,
+      duration: value.duration, intervals: value.intervals }, watch);
+  });
+  setInterval(refreshWatch, 1000);
+  setInterval(() => {
+    const config = watchConfig();
+    if (config) for (const [key, pending] of pendingEntries().filter(([, value]) => value.base === config.base).slice(0, 5)) {
+      sendPending(key, pending, config);
+    }
+  }, 30_000);
 
   // 只做粗提取；合法番号由 Peach 校验。
   function candidates(value) {
