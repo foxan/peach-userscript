@@ -5,7 +5,7 @@
 // @supportURL   https://github.com/peach-mitao/peach-userscript/issues
 // @homepageURL  https://github.com/peach-mitao/peach-userscript
 // @license      AGPL-3.0-or-later
-// @version      0.4.0
+// @version      0.4.1
 // @description  在 JAV 作品详情页识别或选中番号，交给 Peach 下载入库。
 // @match        https://missav.ws/*
 // @match        https://*.missav.ws/*
@@ -254,7 +254,7 @@
   }
 
   // 只在已确认播放器容器里计时；媒体地址、Cookie 与凭据不跨 frame 传递。
-  function observePlayer(selector, emit, visible) {
+  function observePlayer(selector, emit, visible, state = () => {}) {
     let video = null, source = '', session = '', sequence = 0, seconds = 0, intervals = [];
     let lastTime = performance.now(), started = lastTime, position = 0, wasPlaying = false, lastSent = 0;
     const snapshot = () => {
@@ -277,6 +277,8 @@
       const rate = video?.playbackRate || 1;
       const playing = Boolean(video && visible() && !document.hidden && !video.paused && !video.seeking
         && video.readyState >= 2 && !video.closest('.jw-flag-ads,.vjs-ad-playing,[data-ad-playing="true"]'));
+      state(!video ? 'missing' : !visible() || document.hidden ? 'hidden' : video.paused ? 'paused'
+        : playing ? 'playing' : 'buffering');
       if (playing && wasPlaying && elapsed > 0 && elapsed <= 2 && delta > 0
         && rate > 0 && delta <= elapsed * rate + 0.5 && Number.isFinite(video.duration) && video.duration >= 60) {
         const merged = combine(intervals, position, Math.min(current, video.duration));
@@ -321,11 +323,14 @@
           stop?.(); binding = { nonce: data.nonce, origin: event.origin, visible: data.visible === true };
           stop = observePlayer(location.hostname === 'ibucket.org' ? '#player video' : '#vplayer video', value => {
             parent.postMessage({ type: 'peach-watch-report', nonce: binding.nonce, value }, binding.origin);
-          }, () => binding.visible && performance.now() - lastBinding < 4000);
+          }, () => binding.visible && performance.now() - lastBinding < 4000, state => {
+            if (location.hostname === 'lk1.supremejav.com') return;
+            parent.postMessage({ type: 'peach-watch-state', nonce: binding.nonce, state }, binding.origin);
+          });
         }
         binding.visible = data.visible === true;
         for (const frame of child()) for (const origin of FRAME_ORIGINS) frame.contentWindow?.postMessage(data, origin);
-      } else if (binding && data?.type === 'peach-watch-report' && data.nonce === binding.nonce
+      } else if (binding && ['peach-watch-report', 'peach-watch-state'].includes(data?.type) && data.nonce === binding.nonce
         && FRAME_ORIGINS.includes(event.origin) && child().some(frame => frame.contentWindow === event.source)) {
         parent.postMessage(data, binding.origin);
       }
@@ -350,7 +355,56 @@
   let refreshTimer;
   let selected = null;
   let watch = null;
+  let watchLink = { key: '', message: '' };
   const sending = new Set();
+
+  const watchKey = config => config ? `${config.base}|${config.token}` : '';
+  const PLAYER_STATES = new Set(['missing', 'hidden', 'paused', 'playing', 'buffering']);
+
+  function renderWatch() {
+    if (!current?.watchNote) return;
+    const config = watchConfig();
+    let message = '未配置；请在脚本菜单选择「配置站外观看记录」';
+    if (config) {
+      const state = watch?.player;
+      const player = !watch ? '未取得明确作品身份'
+        : state === 'playing' ? '正在播放'
+        : state === 'paused' ? '播放器已暂停'
+        : state === 'hidden' ? '页面不可见，计时暂停'
+        : state === 'buffering' ? '等待正片播放'
+        : '播放器未连接' + (WATCH_SITES[location.hostname] === 'supjav'
+          ? '；请选择 FST 并允许脚本在播放器域运行' : '；请允许脚本在播放器域运行');
+      message = `${watch?.error || watchLink.message || '正在检查 Peach 连接'} · ${player}`;
+      if (watch?.saved) message += ` · 已保存 ${Math.floor(watch.saved)} 秒`;
+    }
+    const text = '站外观看：' + message;
+    if (current.watchNote.textContent !== text) current.watchNote.textContent = text;
+  }
+
+  function probeWatch(config, announce = false) {
+    if (!config) { if (announce) alert('请先在脚本菜单配置站外观看记录。'); return; }
+    const link = { key: watchKey(config), message: '正在检查 Peach 连接' };
+    watchLink = link;
+    const finish = message => {
+      if (watchLink !== link || watchKey(watchConfig()) !== link.key) return;
+      link.message = message; renderWatch();
+      if (announce) alert(message);
+    };
+    renderWatch();
+    try { GM_xmlhttpRequest({ method: 'GET', url: `${config.base}/api/external-watch`,
+      headers: { Authorization: `Bearer ${config.token}`, Accept: 'application/json' },
+      anonymous: true, redirect: 'error', timeout: 15_000,
+      onload(response) {
+        if ([401, 403].includes(response.status)) { finish('观看令牌无效，请配置站外观看专用令牌'); return; }
+        try {
+          if (response.status !== 200 || JSON.parse(response.responseText).ok !== true) throw new Error();
+          finish('Peach 连接成功');
+        } catch { finish('连接检查失败，请更新 Peach 与用户脚本'); }
+      },
+      onerror: () => finish('无法连接 Peach，请检查地址、Tailscale 与脚本连接权限'),
+      ontimeout: () => finish('Peach 连接超时'), onabort: () => finish('Peach 连接已中止'),
+    }); } catch { finish('无法连接 Peach，请检查脚本连接权限'); }
+  }
 
   function watchConfig() {
     try {
@@ -364,31 +418,50 @@
     if (base === null) return;
     const token = prompt('站外观看专用令牌', '');
     if (token === null) return;
-    try { GM_setValue(WATCH_KEY, settings(base, token)); }
+    try {
+      const config = settings(base, token);
+      GM_setValue(WATCH_KEY, config); probeWatch(config, true); refreshWatch();
+    }
     catch { alert('地址或站外观看令牌无效。'); }
   });
   GM_registerMenuCommand('关闭站外观看记录', () => {
     GM_deleteValue(WATCH_KEY);
     watch?.stop?.(); watch = null;
     for (const key of GM_listValues()) if (key.startsWith(PENDING)) GM_deleteValue(key);
+    watchLink = { key: '', message: '' }; renderWatch();
   });
+  GM_registerMenuCommand('检查站外观看连接', () => probeWatch(watchConfig(), true));
 
   function sendPending(key, pending, config) {
     if (Date.now() - pending.at > 24 * 3600_000) { GM_deleteValue(key); return; }
     if (sending.has(key) || pending.base !== config.base) return;
     sending.add(key);
+    const owner = watch;
+    const receipt = (error = '') => {
+      if (!owner || watch !== owner || pending.body.session !== owner.session
+        || pending.body.code !== owner.code || watchKey(watchConfig()) !== watchKey(config)) return;
+      watch.error = error;
+      if (!error) watch.saved = Math.max(watch.saved, pending.body.seconds);
+      renderWatch();
+    };
     try { GM_xmlhttpRequest({ method: 'POST', url: `${config.base}/api/external-watch`,
       headers: { Authorization: `Bearer ${config.token}`, 'Content-Type': 'application/json' },
       data: JSON.stringify(pending.body), anonymous: true, timeout: 15_000, redirect: 'error',
       onload(response) {
         sending.delete(key);
         if (response.status >= 200 && response.status < 300) {
+          try { if (JSON.parse(response.responseText).ok !== true) throw new Error(); }
+          catch { receipt('观看记录回执无效，等待重试'); return; }
           const stored = GM_getValue(key, null);
           if (stored?.body.sequence === pending.body.sequence) GM_deleteValue(key);
-        }
+          receipt();
+        } else receipt([401, 403].includes(response.status) ? '观看令牌无效，请配置站外观看专用令牌'
+          : '观看记录未被接受，请检查 Peach 与用户脚本版本');
       },
-      onerror: () => sending.delete(key), ontimeout: () => sending.delete(key), onabort: () => sending.delete(key),
-    }); } catch { sending.delete(key); }
+      onerror: () => { sending.delete(key); receipt('无法连接 Peach，观看记录等待重试'); },
+      ontimeout: () => { sending.delete(key); receipt('上报超时，观看记录等待重试'); },
+      onabort: () => { sending.delete(key); receipt('上报已中止，观看记录等待重试'); },
+    }); } catch { sending.delete(key); receipt('无法连接 Peach，请检查脚本连接权限'); }
   }
 
   function pendingEntries() {
@@ -407,6 +480,9 @@
   function queueWatch(value, owner) {
     const config = watchConfig();
     if (!config || watch !== owner || owner.url !== location.href || owner.base !== config.base) return;
+    if (owner.session !== value.session) {
+      owner.session = value.session; owner.saved = 0; owner.error = '';
+    }
     const key = PENDING + value.session;
     const pending = { base: config.base, at: Date.now(), body: { ...value,
       code: owner.code, site: owner.site, page: owner.page } };
@@ -417,29 +493,41 @@
     const config = watchConfig(), url = new URL(location.href), site = WATCH_SITES[url.hostname];
     const rule = siteFor(url), item = rule ? automaticIdentity(url, rule) : null;
     const key = config && site && item && !item.conflict ? `${url.href}|${item.code}|${config.base}|${config.token}` : '';
+    if (key && watchLink.key !== watchKey(config)) probeWatch(config);
     if (watch?.key !== key) {
       watch?.stop?.(); watch = null;
       if (key) {
         const owner = { key, url: url.href, page: item.source, code: item.code, site, base: config.base,
-          nonce: crypto.randomUUID(), frame: null, stop: null };
+          nonce: crypto.randomUUID(), frame: null, stop: null, player: 'missing', lastState: 0, saved: 0, error: '' };
         watch = owner;
         owner.stop = observePlayer(site === 'supjav' ? '#dz_video video' : '#player video', value => queueWatch(value, owner),
-          () => watch === owner);
+          () => watch === owner, state => {
+            if (watch === owner && !owner.frame) { owner.player = state; renderWatch(); }
+          });
       }
     }
-    if (!watch) return;
+    if (!watch) { renderWatch(); return; }
     const selector = watch.site === 'uncenx' ? 'iframe[src^="https://ibucket.org/embed/"]' : '#dz_video > iframe#video';
     const frames = [...document.querySelectorAll(selector)];
     const frame = frames.length === 1 ? frames[0] : null;
-    if (watch.frame !== frame) { watch.frame = frame; watch.nonce = crypto.randomUUID(); }
+    if (watch.frame !== frame) {
+      watch.frame = frame; watch.nonce = crypto.randomUUID(); watch.player = 'missing'; watch.lastState = 0;
+    }
+    if (frame && performance.now() - watch.lastState > 4000) watch.player = 'missing';
     if (frame) for (const origin of FRAME_ORIGINS) frame.contentWindow?.postMessage({
       type: 'peach-watch-bind', nonce: watch.nonce, visible: !document.hidden,
     }, origin);
+    renderWatch();
   }
   addEventListener('message', event => {
     if (!watch?.frame || event.source !== watch.frame.contentWindow
-      || !FRAME_ORIGINS.includes(event.origin) || event.data?.type !== 'peach-watch-report'
-      || event.data.nonce !== watch.nonce) return;
+      || !FRAME_ORIGINS.includes(event.origin)
+      || event.data?.nonce !== watch.nonce) return;
+    if (event.data?.type === 'peach-watch-state') {
+      if (!PLAYER_STATES.has(event.data.state)) return;
+      watch.player = event.data.state; watch.lastState = performance.now(); renderWatch(); return;
+    }
+    if (event.data?.type !== 'peach-watch-report') return;
     const value = event.data.value;
     if (!value || typeof value !== 'object' || !/^[a-f0-9-]{36}$/.test(value.session)
       || !Number.isInteger(value.sequence) || !Number.isFinite(value.seconds)
@@ -621,6 +709,10 @@
   }
 
   GM_registerMenuCommand('配置 Peach 地址与令牌', configure);
+  GM_registerMenuCommand('清除浏览器添加配置', () => {
+    GM_deleteValue(STORAGE_BASE); GM_deleteValue(STORAGE_TOKEN);
+    pageKey = ''; refresh();
+  });
   GM_registerMenuCommand('选中番号加入 Peach', selectCode);
 
   function request(config, code, source, method) {
@@ -637,7 +729,7 @@
           timeout: 15_000,
           onload(response) {
             if (response.status < 200 || response.status >= 300) {
-              reject(new Error(response.status === 401 || response.status === 403 ? '令牌无效或无权限，请重新配置。' : 'Peach 请求失败，请查询状态。'));
+              reject(new Error(response.status === 401 || response.status === 403 ? '下载令牌无效，请配置浏览器添加专用令牌。' : 'Peach 请求失败，请查询状态。'));
               return;
             }
             try {
@@ -737,10 +829,15 @@
     const note = document.createElement('p');
     note.setAttribute('role', 'status');
     note.setAttribute('aria-live', 'polite');
+    const watchNote = document.createElement('p');
+    watchNote.dataset.peachWatch = '';
+    watchNote.setAttribute('role', 'status');
+    watchNote.setAttribute('aria-live', 'polite');
     panel.append(button, note);
+    if (WATCH_SITES[location.hostname]) panel.append(watchNote);
     shadow.append(style, panel);
     document.body.append(root);
-    const view = { root, button, note, identity: item, url: location.href, generation, state: 'idle', busy: false, queryOnly: attempts.has(comparisonKey(item.code)) };
+    const view = { root, button, note, watchNote, identity: item, url: location.href, generation, state: 'idle', busy: false, queryOnly: attempts.has(comparisonKey(item.code)) };
     current = view;
     note.textContent = item.conflict ? '页面身份不一致，请核对番号。' : `${item.code} · ${configuration() ? '正在查询 Peach' : '请先配置 Peach 地址与令牌。'}`;
     button.addEventListener('click', () => {
@@ -749,6 +846,7 @@
       void query(view, view.queryOnly || ACTIVE.has(view.state) ? 'GET' : 'POST');
     });
     render(view);
+    renderWatch();
     if (!item.conflict && configuration()) void query(view);
   }
 

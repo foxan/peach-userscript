@@ -28,7 +28,7 @@ describe('站外观看记录', () => {
   after(async () => { await browser?.close(); });
 
   async function open({ configured = true, frame = false, site = 'supjav', conflict = false,
-    nested = false, viewport = VIEWPORTS[0] } = {}) {
+    nested = false, unsupported = false, viewport = VIEWPORTS[0] } = {}) {
     const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height } });
     const page = await context.newPage();
     const problems: string[] = [];
@@ -40,21 +40,25 @@ describe('站外观看记录', () => {
       else if (url.hostname === 'fc2stream.tv') html = '<div id="vplayer"><video></video></div>';
       else if (url.hostname === 'lk1.supremejav.com') html = '<iframe src="https://fc2stream.tv/embed/test"></iframe>';
       else if (site === 'uncenx') html = '<h1>ABC-123</h1><iframe src="https://ibucket.org/embed/abc-123"></iframe>';
+      else if (unsupported) html = '<div class="archive-title"><h1>ABC-123</h1></div><a class="btn-server active">EVS</a><div id="dz_video"><iframe id="video" src="https://evs.example.invalid/embed/test"></iframe></div>';
       else if (nested) html = '<div class="archive-title"><h1>ABC-123</h1></div><div id="dz_video"><iframe id="video" src="https://lk1.supremejav.com/supjav.php?l=test"></iframe></div>';
       else html = `<div class="archive-title"><h1>ABC-123${conflict ? ' ABC-124' : ''}</h1></div><div id="dz_video"><video></video></div><aside><video></video></aside>`;
       return route.fulfill({ contentType: 'text/html', body: `<!doctype html><title>ABC-123</title>${html}` });
     });
     await context.addInitScript(({ base, token, configured }) => {
       const values: Record<string, unknown> = configured ? { 'peach.watch.config': { base, token } } : {};
-      const mock = { calls: [] as Record<string, unknown>[], values, menus: {} as Record<string, () => void>, fail: false };
+      const mock = { calls: [] as Record<string, unknown>[], values, menus: {} as Record<string, () => void>,
+        fail: false, status: 200, malformed: false, defer: false, pending: [] as any[] };
       Object.assign(window, { watchMock: mock,
         GM_getValue: (key: string, fallback: unknown) => values[key] ?? fallback,
         GM_setValue: (key: string, value: unknown) => { values[key] = value; },
         GM_listValues: () => Object.keys(values), GM_deleteValue: (key: string) => { delete values[key]; },
         GM_registerMenuCommand: (name: string, callback: () => void) => { mock.menus[name] = callback; },
         GM_xmlhttpRequest: (request: Record<string, unknown> & { onload(value: unknown): void; onerror(): void }) => {
-          mock.calls.push({ url: request.url, data: request.data, headers: request.headers, anonymous: request.anonymous });
-          if (mock.fail) request.onerror(); else request.onload({ status: 200, responseText: '{"ok":true}' });
+          mock.calls.push({ method: request.method, url: request.url, data: request.data, headers: request.headers, anonymous: request.anonymous });
+          if (mock.defer && request.method === 'POST') { mock.pending.push(request); return; }
+          if (mock.fail) request.onerror(); else request.onload({ status: mock.status,
+            responseText: mock.malformed ? '{"ok":false}' : '{"ok":true}' });
         },
       });
     }, { base: BASE, token: TOKEN, configured });
@@ -67,15 +71,111 @@ describe('站外观看记录', () => {
       const child = page.frames().find(value => value.url().startsWith('https://ibucket.org/'))!;
       await child.addScriptTag({ content: SCRIPT });
       await driver(child, 'video');
-    } else await driver(page, '#dz_video video');
+    } else if (!unsupported) await driver(page, '#dz_video video');
     await page.addScriptTag({ content: SCRIPT });
     return { page, problems, close: () => context.close() };
   }
 
   async function reports(page: Page) {
-    return page.evaluate(() => (window as any).watchMock.calls.filter((call: any) => call.url.endsWith('/external-watch'))
+    return page.evaluate(() => (window as any).watchMock.calls.filter((call: any) => call.method === 'POST' && call.url.endsWith('/external-watch'))
       .map((call: any) => JSON.parse(call.data)));
   }
+
+  const watchText = (page: Page) => page.locator('#peach-jav-action [data-peach-watch]');
+
+  it('已配对页面独立显示服务器连接与实际保存回执', async () => {
+    const opened = await open();
+    try {
+      await opened.page.clock.runFor(12_000);
+      assert.match(await watchText(opened.page).innerText(), /已保存/);
+      assert.ok(await opened.page.evaluate(() => (window as any).watchMock.calls.some((r: any) =>
+        r.method === 'GET' && r.url.endsWith('/external-watch'))));
+    } finally { await opened.close(); }
+  });
+
+  it('未连接的 Supjav 播放器明确提示 FST 与脚本权限且不伪造观看', async () => {
+    const opened = await open({ unsupported: true });
+    try {
+      await opened.page.clock.runFor(6000);
+      assert.match(await watchText(opened.page).innerText(), /FST/);
+      assert.match(await watchText(opened.page).innerText(), /播放器未连接/);
+      assert.deepEqual(await reports(opened.page), []);
+    } finally { await opened.close(); }
+  });
+
+  it('网络失败在观看状态显示且恢复后显示保存回执', async () => {
+    const opened = await open();
+    try {
+      await opened.page.evaluate(() => { (window as any).watchMock.fail = true; });
+      await opened.page.clock.runFor(12_000);
+      assert.match(await watchText(opened.page).innerText(), /无法连接/);
+      await opened.page.evaluate(() => { (window as any).watchMock.fail = false; });
+      await opened.page.clock.runFor(12_000);
+      assert.match(await watchText(opened.page).innerText(), /已保存/);
+    } finally { await opened.close(); }
+  });
+
+  it('观看拒绝与无效回执分别显示且保留待发送快照', async () => {
+    const opened = await open(); const page = opened.page;
+    try {
+      await page.evaluate(() => { (window as any).watchMock.status = 401; });
+      await page.clock.runFor(12_000);
+      assert.match(await watchText(page).innerText(), /观看令牌无效/);
+      assert.doesNotMatch(await watchText(page).innerText(), /已保存/);
+      await page.evaluate(() => { (window as any).watchMock.status = 200; (window as any).watchMock.malformed = true; });
+      await page.clock.runFor(12_000);
+      assert.match(await watchText(page).innerText(), /回执无效/);
+      assert.ok(await page.evaluate(() => Object.keys((window as any).watchMock.values)
+        .some(key => key.startsWith('peach.watch.pending.'))));
+      await page.evaluate(() => { (window as any).watchMock.malformed = false; });
+      await page.clock.runFor(12_000);
+      assert.match(await watchText(page).innerText(), /已保存/);
+    } finally { await opened.close(); }
+  });
+
+  it('连接检查使用观看令牌且不提交播放记录，清除下载配对保留观看配对', async () => {
+    const opened = await open(); const page = opened.page;
+    const alerts: string[] = [];
+    page.on('dialog', dialog => { alerts.push(dialog.message()); void dialog.accept(); });
+    try {
+      await page.evaluate(({ base, token }) => {
+        const mock = (window as any).watchMock;
+        mock.values['peach.jav.base'] = base; mock.values['peach.jav.token'] = 'wrong-download-token';
+        mock.menus['检查站外观看连接']();
+      }, { base: BASE, token: TOKEN });
+      assert.ok(alerts.includes('Peach 连接成功'));
+      await page.evaluate(() => { (window as any).watchMock.menus['清除浏览器添加配置'](); });
+      const values = await page.evaluate(() => (window as any).watchMock.values);
+      assert.equal(values['peach.jav.token'], undefined);
+      assert.equal(values['peach.watch.config'].token, TOKEN);
+      assert.deepEqual(await reports(page), []);
+      assert.ok(await page.evaluate(({ token }) => (window as any).watchMock.calls.some((r: any) =>
+        r.method === 'GET' && r.url.endsWith('/external-watch') && r.headers.Authorization === `Bearer ${token}`), { token: TOKEN }));
+      assert.ok(alerts.every(message => !message.includes(TOKEN)));
+    } finally { await opened.close(); }
+  });
+
+  it('同番号切页隔离旧会话的延迟错误与成功回执', async () => {
+    for (const status of [200, 401]) {
+      const opened = await open(); const page = opened.page;
+      try {
+        await page.evaluate(() => { (window as any).watchMock.defer = true; });
+        await page.clock.runFor(12_000);
+        assert.ok(await page.evaluate(() => (window as any).watchMock.pending.length));
+        await page.evaluate(() => history.pushState({}, '', '/ja/124.html'));
+        await page.clock.runFor(1500);
+        const text = await watchText(page).innerText();
+        assert.doesNotMatch(text, /已保存|令牌无效/);
+        await page.evaluate(status => {
+          (window as any).watchMock.pending[0].onload({ status, responseText: '{"ok":true}' });
+        }, status);
+        assert.equal(await watchText(page).innerText(), text);
+        await page.evaluate(() => { (window as any).watchMock.defer = false; });
+        await page.clock.runFor(12_000);
+        assert.match(await watchText(page).innerText(), /已保存/);
+      } finally { await opened.close(); }
+    }
+  });
 
   for (const viewport of VIEWPORTS) it(`${viewport.name} 记录播放墙钟时间和独立覆盖区间`, async () => {
     const opened = await open({ viewport });
@@ -166,9 +266,15 @@ describe('站外观看记录', () => {
           elapsed: 50, duration: 600, intervals: [[0, 50]] } }, location.origin));
       await page.clock.runFor(2000);
       assert.deepEqual(await reports(page), []);
-      await page.clock.runFor(13_000);
+      // frame 消息由浏览器任务队列递送；每个心跳间隔交还事件循环。
+      for (let step = 0; step < 26; step++) {
+        await page.clock.runFor(500);
+        await page.waitForTimeout(10);
+      }
       const values = await reports(page);
       assert.ok(values.length); assert.equal(values.at(-1).site, 'supjav');
+      assert.match(await watchText(page).innerText(), /正在播放/);
+      assert.match(await watchText(page).innerText(), /已保存/);
       for (const child of page.frames().slice(1)) {
         assert.equal(await child.evaluate(() => (window as any).watchMock.calls.length), 0);
       }

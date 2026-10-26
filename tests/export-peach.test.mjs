@@ -27,7 +27,7 @@ test('Peach 导出预览不改文件，apply 只同步指定制品并记录上�
     assert.deepEqual(applied.files.map(item => item.name), ['peach-jav.user.js', 'jav-sites.json', 'jav-userscript-release.json']);
     const provenance = JSON.parse(await readFile(join(target, 'web/integrations/jav-userscript-release.json'), 'utf8'));
     assert.equal(provenance.commit, commit);
-    assert.equal(provenance.version, '0.4.0');
+    assert.equal(provenance.version, '0.4.1');
     assert.equal(await readFile(join(target, 'web/integrations/unrelated.json'), 'utf8'), 'keep');
     assert.ok((await exportPeach({ target, commit })).files.every(item => item.action === 'unchanged'));
     await assert.rejects(exportPeach({ target, commit: 'main', apply: true }), /40 位/);

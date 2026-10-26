@@ -17,7 +17,7 @@ test('安装产物可解析，元数据匹配清单且每个域名覆盖 HTTPS �
   assert.doesNotThrow(() => new Script(script));
   const metadata = new Map([...script.matchAll(/^\/\/ @(\w+)\s+(.+)$/gm)]
     .filter(match => match[1] !== 'match').map(match => [match[1], match[2]]));
-  assert.equal(metadata.get('version'), '0.4.0');
+  assert.equal(metadata.get('version'), '0.4.1');
   assert.equal(metadata.get('namespace'), 'https://github.com/peach-mitao/peach-userscript');
   assert.equal(metadata.get('source'), metadata.get('namespace'));
   assert.equal(metadata.get('supportURL'), metadata.get('namespace') + '/issues');
@@ -32,7 +32,7 @@ test('安装产物可解析，元数据匹配清单且每个域名覆盖 HTTPS �
 test('构建不依赖时间，CRLF 模板得到同一份 LF 产物，工作区产物一致', async () => {
   const first = await outputs(ROOT);
   assert.deepEqual(await outputs(ROOT), first);
-  assert.equal(render(template.replace(/\r?\n/g, '\r\n'), manifest, '0.4.0'), first.get('peach-jav.user.js'));
+  assert.equal(render(template.replace(/\r?\n/g, '\r\n'), manifest, '0.4.1'), first.get('peach-jav.user.js'));
   await build({ check: true });
 });
 
@@ -54,7 +54,7 @@ test('站点清单无效时拒绝构建', () => {
 
 test('模板缺失、重复标记或版本漂移时拒绝构建', () => {
   for (const source of [template.replace('__PEACH_JAV_SITES__', '{}'), template + '\n// __PEACH_JAV_MATCHES__']) {
-    assert.throws(() => render(source, manifest, '0.4.0'));
+    assert.throws(() => render(source, manifest, '0.4.1'));
   }
   assert.throws(() => render(template, manifest, '0.3.1'));
 });
