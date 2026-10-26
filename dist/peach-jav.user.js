@@ -436,8 +436,10 @@
     if (Date.now() - pending.at > 24 * 3600_000) { GM_deleteValue(key); return; }
     if (sending.has(key) || pending.base !== config.base) return;
     sending.add(key);
+    const owner = watch;
     const receipt = (error = '') => {
-      if (!watch || pending.body.code !== watch.code || watchKey(watchConfig()) !== watchKey(config)) return;
+      if (!owner || watch !== owner || pending.body.session !== owner.session
+        || pending.body.code !== owner.code || watchKey(watchConfig()) !== watchKey(config)) return;
       watch.error = error;
       if (!error) watch.saved = Math.max(watch.saved, pending.body.seconds);
       renderWatch();
@@ -478,6 +480,9 @@
   function queueWatch(value, owner) {
     const config = watchConfig();
     if (!config || watch !== owner || owner.url !== location.href || owner.base !== config.base) return;
+    if (owner.session !== value.session) {
+      owner.session = value.session; owner.saved = 0; owner.error = '';
+    }
     const key = PENDING + value.session;
     const pending = { base: config.base, at: Date.now(), body: { ...value,
       code: owner.code, site: owner.site, page: owner.page } };

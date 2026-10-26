@@ -48,7 +48,7 @@ describe('站外观看记录', () => {
     await context.addInitScript(({ base, token, configured }) => {
       const values: Record<string, unknown> = configured ? { 'peach.watch.config': { base, token } } : {};
       const mock = { calls: [] as Record<string, unknown>[], values, menus: {} as Record<string, () => void>,
-        fail: false, status: 200, malformed: false };
+        fail: false, status: 200, malformed: false, defer: false, pending: [] as any[] };
       Object.assign(window, { watchMock: mock,
         GM_getValue: (key: string, fallback: unknown) => values[key] ?? fallback,
         GM_setValue: (key: string, value: unknown) => { values[key] = value; },
@@ -56,6 +56,7 @@ describe('站外观看记录', () => {
         GM_registerMenuCommand: (name: string, callback: () => void) => { mock.menus[name] = callback; },
         GM_xmlhttpRequest: (request: Record<string, unknown> & { onload(value: unknown): void; onerror(): void }) => {
           mock.calls.push({ method: request.method, url: request.url, data: request.data, headers: request.headers, anonymous: request.anonymous });
+          if (mock.defer && request.method === 'POST') { mock.pending.push(request); return; }
           if (mock.fail) request.onerror(); else request.onload({ status: mock.status,
             responseText: mock.malformed ? '{"ok":false}' : '{"ok":true}' });
         },
@@ -152,6 +153,28 @@ describe('站外观看记录', () => {
         r.method === 'GET' && r.url.endsWith('/external-watch') && r.headers.Authorization === `Bearer ${token}`), { token: TOKEN }));
       assert.ok(alerts.every(message => !message.includes(TOKEN)));
     } finally { await opened.close(); }
+  });
+
+  it('同番号切页隔离旧会话的延迟错误与成功回执', async () => {
+    for (const status of [200, 401]) {
+      const opened = await open(); const page = opened.page;
+      try {
+        await page.evaluate(() => { (window as any).watchMock.defer = true; });
+        await page.clock.runFor(12_000);
+        assert.ok(await page.evaluate(() => (window as any).watchMock.pending.length));
+        await page.evaluate(() => history.pushState({}, '', '/ja/124.html'));
+        await page.clock.runFor(1500);
+        const text = await watchText(page).innerText();
+        assert.doesNotMatch(text, /已保存|令牌无效/);
+        await page.evaluate(status => {
+          (window as any).watchMock.pending[0].onload({ status, responseText: '{"ok":true}' });
+        }, status);
+        assert.equal(await watchText(page).innerText(), text);
+        await page.evaluate(() => { (window as any).watchMock.defer = false; });
+        await page.clock.runFor(12_000);
+        assert.match(await watchText(page).innerText(), /已保存/);
+      } finally { await opened.close(); }
+    }
   });
 
   for (const viewport of VIEWPORTS) it(`${viewport.name} 记录播放墙钟时间和独立覆盖区间`, async () => {
